@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Loader;
-using System.Xml;
-using Microsoft.Xna.Framework;
 
-namespace UOIso
+namespace uoiso
 {
     internal static class Program
     {
@@ -97,9 +95,8 @@ namespace UOIso
             _loadContext.ResolvingUnmanagedDll += ResolveUnmanagedDll;
             _loadContext.Resolving += ResolveAssembly;
 
-            using (Game g = new Game())
+            using (Game g = new UOGame())
             {
-                new GraphicsDeviceManager(g);
                 g.Run();
             }
         }
