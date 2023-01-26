@@ -17,8 +17,8 @@ namespace uoiso
 
         private float TILE_SIZE = 22f;
 
-        private int VIEW_ROWS = 36;
-        private int VIEW_COLUMNS = 36;
+        private int VIEW_ROWS = 8;
+        private int VIEW_COLUMNS = 8;
 
         private int _primitives;
 
@@ -79,30 +79,40 @@ namespace uoiso
 
         public void Update(GameTime gameTime)
         {
-            /* Game Y goes from top to bottom. Drawing Y from bottom to top. This just flips it over. */
-            _world = Matrix.CreateReflection(new Plane(0, -1f, 0, 0));
-
             /* Where we are looking */
-            Vector3 focus = new Vector3(((VIEW_ROWS / 2) * TILE_SIZE), -1f * ((VIEW_COLUMNS / 2) * TILE_SIZE), 0);
+            Vector3 focus = new Vector3(((VIEW_ROWS / 2) * TILE_SIZE), ((VIEW_COLUMNS / 2) * TILE_SIZE), 0);
 
-            /* Where the camera is */
-            Vector3 camera = focus + new Vector3(0, 0, 255f);
+            /* We draw in world coordinates already */
+            _world = Matrix.Identity;
 
-            _view = Matrix.CreateLookAt(camera, focus, new Vector3(-1f, 1f, 0));
+            /* Shift the camera to where we're looking at. The camera is literally on top of our focus point. */
+            _view = Matrix.CreateTranslation(new Vector3(-focus.X, -focus.Y, 0));
 
-            Matrix ortho = Matrix.CreateOrthographic(1280f, 720f, 0f, 300f);
+            Matrix ortho = Matrix.CreateOrthographic(1280f, 1024f, 0f, 300f);
 
-            float c = (float)Math.Cos(MathHelper.ToRadians(45)) * -1f;
-            float s = (float)Math.Sin(MathHelper.ToRadians(45)) * 1f;
+            /* Game Y goes from top to bottom. Drawing Y from bottom to top. This just flips it over. */
+            Matrix reflect = new Matrix(
+                                1, 0, 0, 0,
+                                0, -1, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0, 1);
 
+            /* Rotate 45 degrees */
+            float c = (float)Math.Cos(MathHelper.ToRadians(45));
+            Matrix rotate = new Matrix(
+                            c, -c, 0, 0,
+                            c, c, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1);
+
+            // HELP! THIS JUST NEEDS TO MAKE Y = Y + (Z * 4)
             Matrix oblique = new Matrix(
                                     1, 0, 0, 0,
                                     0, 1, 0, 0,
-                                    c, s, 1, 0,
+                                    0, 0, 1, 0,
                                     0, 0, 0, 1);
 
-            /*_projection = ortho * oblique; */
-            _projection = ortho;
+            _projection = reflect * rotate * oblique * ortho;
         }
 
         public void Draw(GameTime gameTime)

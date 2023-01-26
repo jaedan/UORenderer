@@ -13,7 +13,7 @@ namespace uoiso
             _gdm = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1280,
-                PreferredBackBufferHeight = 720,
+                PreferredBackBufferHeight = 1024,
                 IsFullScreen = false,
                 SynchronizeWithVerticalRetrace = true
             };
