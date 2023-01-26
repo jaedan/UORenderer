@@ -17,8 +17,8 @@ namespace uoiso
 
         private float TILE_SIZE = 22f;
 
-        private int VIEW_ROWS = 8;
-        private int VIEW_COLUMNS = 8;
+        private int VIEW_ROWS = 36;
+        private int VIEW_COLUMNS = 36;
 
         private int _primitives;
 
@@ -105,11 +105,11 @@ namespace uoiso
                             0, 0, 1, 0,
                             0, 0, 0, 1);
 
-            // HELP! THIS JUST NEEDS TO MAKE Y = Y + (Z * 4)
+            /* This takes the coordinates (x, y, z) and turns it into the screen point (x, y + 4z) */
             Matrix oblique = new Matrix(
                                     1, 0, 0, 0,
                                     0, 1, 0, 0,
-                                    0, 0, 1, 0,
+                                    0, 4, 0, 0,
                                     0, 0, 0, 1);
 
             _projection = reflect * rotate * oblique * ortho;
