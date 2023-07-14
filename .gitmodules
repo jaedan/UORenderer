@@ -4,3 +4,6 @@
 [submodule "lib"]
 	path = lib
 	url = https://github.com/deccer/fna-libs
+[submodule "ImGUI"]
+	path = ImGUI
+	url = https://github.com/ImGuiNET/ImGui.NET
