@@ -3,40 +3,61 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UORenderer", "src\UORenderer.csproj", "{0935601E-70E9-45D9-85D0-066C18BD8029}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UORenderer", "src\UORenderer.csproj", "{0935601E-70E9-45D9-85D0-066C18BD8029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FNA.Core", "FNA\FNA.Core.csproj", "{36F6340F-8282-40D4-A48C-E0116112F771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FNA.Core", "FNA\FNA.Core.csproj", "{36F6340F-8282-40D4-A48C-E0116112F771}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGUI", "ImGUI", "{6F94986A-B297-49F8-9F3A-C0CF65365BFA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{12BBB0AD-075C-4D0B-A705-BE0663587AAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGui.NET", "ImGUI\src\ImGui.NET\ImGui.NET.csproj", "{3560FF05-4116-424E-B4B2-E5B20F37CD30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGui.NET", "ImGUI\src\ImGui.NET\ImGui.NET.csproj", "{3560FF05-4116-424E-B4B2-E5B20F37CD30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassicUO.IO", "ClassicUO.IO\ClassicUO.IO.csproj", "{A88CAAD1-39A1-41A4-86D9-C8A061BF1F20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassicUO.Utility", "ClassicUO.Utility\ClassicUO.Utility.csproj", "{27828625-4543-4625-B998-69532C79C1CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassicUO.Assets", "ClassicUO.Assets\ClassicUO.Assets.csproj", "{C9944FE7-44A3-4AE7-A73F-296F1AC62616}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0935601E-70E9-45D9-85D0-066C18BD8029}.Debug|x64.ActiveCfg = Debug|x64
+		{0935601E-70E9-45D9-85D0-066C18BD8029}.Debug|x64.Build.0 = Debug|x64
+		{0935601E-70E9-45D9-85D0-066C18BD8029}.Release|x64.ActiveCfg = Release|x64
+		{0935601E-70E9-45D9-85D0-066C18BD8029}.Release|x64.Build.0 = Release|x64
+		{36F6340F-8282-40D4-A48C-E0116112F771}.Debug|x64.ActiveCfg = Debug|x64
+		{36F6340F-8282-40D4-A48C-E0116112F771}.Debug|x64.Build.0 = Debug|x64
+		{36F6340F-8282-40D4-A48C-E0116112F771}.Release|x64.ActiveCfg = Release|x64
+		{36F6340F-8282-40D4-A48C-E0116112F771}.Release|x64.Build.0 = Release|x64
+		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Debug|x64.ActiveCfg = Debug|x64
+		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Debug|x64.Build.0 = Debug|x64
+		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Release|x64.ActiveCfg = Release|x64
+		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Release|x64.Build.0 = Release|x64
+		{A88CAAD1-39A1-41A4-86D9-C8A061BF1F20}.Debug|x64.ActiveCfg = Debug|x64
+		{A88CAAD1-39A1-41A4-86D9-C8A061BF1F20}.Debug|x64.Build.0 = Debug|x64
+		{A88CAAD1-39A1-41A4-86D9-C8A061BF1F20}.Release|x64.ActiveCfg = Release|x64
+		{A88CAAD1-39A1-41A4-86D9-C8A061BF1F20}.Release|x64.Build.0 = Release|x64
+		{27828625-4543-4625-B998-69532C79C1CC}.Debug|x64.ActiveCfg = Debug|x64
+		{27828625-4543-4625-B998-69532C79C1CC}.Debug|x64.Build.0 = Debug|x64
+		{27828625-4543-4625-B998-69532C79C1CC}.Release|x64.ActiveCfg = Release|x64
+		{27828625-4543-4625-B998-69532C79C1CC}.Release|x64.Build.0 = Release|x64
+		{C9944FE7-44A3-4AE7-A73F-296F1AC62616}.Debug|x64.ActiveCfg = Debug|x64
+		{C9944FE7-44A3-4AE7-A73F-296F1AC62616}.Debug|x64.Build.0 = Debug|x64
+		{C9944FE7-44A3-4AE7-A73F-296F1AC62616}.Release|x64.ActiveCfg = Release|x64
+		{C9944FE7-44A3-4AE7-A73F-296F1AC62616}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0935601E-70E9-45D9-85D0-066C18BD8029}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{0935601E-70E9-45D9-85D0-066C18BD8029}.Debug|Any CPU.Build.0 = Debug|x64
-		{0935601E-70E9-45D9-85D0-066C18BD8029}.Release|Any CPU.ActiveCfg = Release|x64
-		{0935601E-70E9-45D9-85D0-066C18BD8029}.Release|Any CPU.Build.0 = Release|x64
-		{36F6340F-8282-40D4-A48C-E0116112F771}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{36F6340F-8282-40D4-A48C-E0116112F771}.Debug|Any CPU.Build.0 = Debug|x64
-		{36F6340F-8282-40D4-A48C-E0116112F771}.Release|Any CPU.ActiveCfg = Release|x64
-		{36F6340F-8282-40D4-A48C-E0116112F771}.Release|Any CPU.Build.0 = Release|x64
-		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3560FF05-4116-424E-B4B2-E5B20F37CD30}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{12BBB0AD-075C-4D0B-A705-BE0663587AAC} = {6F94986A-B297-49F8-9F3A-C0CF65365BFA}
 		{3560FF05-4116-424E-B4B2-E5B20F37CD30} = {12BBB0AD-075C-4D0B-A705-BE0663587AAC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {952CDBD6-E92D-45E2-A528-844C11C1FD51}
 	EndGlobalSection
 EndGlobal

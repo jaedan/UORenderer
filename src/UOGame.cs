@@ -1,3 +1,6 @@
+using ClassicUO.Assets;
+using ClassicUO.Utility;
+using ClassicUO.Utility.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -27,6 +30,17 @@ internal class UOGame : Game
 
     protected override void Initialize()
     {
+        Log.Start(LogTypes.All);
+
+        ClientVersionHelper.TryParseFromFile(UORenderer.CurrentProject.GetFullPath("client.exe"), out string version);
+
+        if (!ClientVersionHelper.IsClientVersionValid(version, out ClientVersion clientVersion))
+        {
+            throw new Exception("Could not discover client version");
+        }
+
+        UOFileManager.Load(clientVersion, UORenderer.CurrentProject.BasePath, false, "ENU");
+
         if (_gdm.GraphicsDevice.Adapter.IsProfileSupported(GraphicsProfile.HiDef))
         {
             _gdm.GraphicsProfile = GraphicsProfile.HiDef;

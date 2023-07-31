@@ -1,3 +1,4 @@
+using ClassicUO.Assets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -92,7 +93,7 @@ public class MapManager
 
         _postProcessRenderer = new PostProcessRenderer(gd);
 
-        _map = new Map(0, 10752, 6144);
+        _map = new Map(0, 7168, 4096);
 
         var focus = _map.GetLandTile(1631, 1499);
 
@@ -118,8 +119,8 @@ public class MapManager
             1f - _lightingState.LightDiffuseColor.Z
         );
 
-        using var texFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("texmaps.uoo"));
-        using var artFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("landtiles.uoo"));
+        using var texFile = new TexMapsFile(UORenderer.CurrentProject.GetFullPath("texmaps.uoo"));
+        using var artFile = new LandFile(UORenderer.CurrentProject.GetFullPath("landtiles.uoo"));
 
         _landTextures = new LandTexture[artFile.Max];
 
@@ -159,7 +160,7 @@ public class MapManager
         }
 
         /* Lazy load the statics */
-        _staticArt = new ArtFile(UORenderer.CurrentProject.GetFullPath("art.uoo"));
+        _staticArt = new StaticsFile(UORenderer.CurrentProject.GetFullPath("art.uoo"));
         _staticTextures = new StaticTexture[_staticArt.Max];
 
     }
@@ -515,7 +516,7 @@ public class MapManager
                 {
                     ref var s = ref statics[i];
 
-                    ref var data = ref TileData.ItemTable[s.ID];
+                    ref var data = ref TileDataLoader.Instance.StaticData[s.ID];
 
                     if (!IsRock(s.ID) && !IsTree(s.ID) && !data.Flags.HasFlag(TileFlag.Foliage))
                         continue;
@@ -530,10 +531,10 @@ public class MapManager
 
     private bool CanDrawStatic(ushort id)
     {
-        if (id >= TileData.ItemTable.Length)
+        if (id >= TileDataLoader.Instance.StaticData.Length)
             return false;
 
-        ref ItemData data = ref TileData.ItemTable[id];
+        ref StaticTiles data = ref TileDataLoader.Instance.StaticData[id];
 
         if ((data.Flags & TileFlag.NoDraw) != 0)
             return false;
@@ -571,7 +572,7 @@ public class MapManager
         if (!CanDrawStatic(s.ID))
             return;
 
-        ref var data = ref TileData.ItemTable[s.ID];
+        ref var data = ref TileDataLoader.Instance.StaticData[s.ID];
 
         ref var staticTex = ref _staticTextures[s.ID];
 
@@ -629,7 +630,7 @@ public class MapManager
                 if (tileTex.Texture == null)
                     continue;
 
-                ref var data = ref TileData.LandTable[tile.ID];
+                ref var data = ref TileDataLoader.Instance.LandData[tile.ID];
 
                 if ((data.Flags & TileFlag.Wet) != 0)
                 {

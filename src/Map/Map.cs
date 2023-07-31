@@ -1,3 +1,4 @@
+using ClassicUO.Assets;
 using Microsoft.Xna.Framework;
 
 namespace UORenderer;
@@ -14,7 +15,7 @@ public struct LandTile
     public Vector3 NormalBottom;
     public Vector3 NormalLeft;
 
-    public LandData Data => TileData.LandTable[ID & TileData.MaxLandValue];
+    public LandTiles Data => TileDataLoader.Instance.LandData[ID];
 }
 
 public struct StaticTile
@@ -25,7 +26,7 @@ public struct StaticTile
     public int Z;
     public ushort Hue;
 
-    public ItemData Data => TileData.ItemTable[ID & TileData.MaxItemValue];
+    public StaticTiles Data => TileDataLoader.Instance.StaticData[ID];
 }
 
 public class Map
@@ -165,10 +166,10 @@ public class Map
 
     private bool CanDrawStatic(ushort id)
     {
-        if (id >= TileData.ItemTable.Length)
+        if (id >= TileDataLoader.Instance.StaticData.Length)
             return false;
 
-        ref ItemData data = ref TileData.ItemTable[id];
+        ref StaticTiles data = ref TileDataLoader.Instance.StaticData[id];
 
         if ((data.Flags & TileFlag.NoDraw) != 0)
             return false;
