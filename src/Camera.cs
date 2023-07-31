@@ -32,7 +32,7 @@ public class Camera
                                 0, 1, 1, 0,
                                 0, 0, 0, 1);
 
-    private Vector3 _position = new Vector3(0, 0, 128);
+    private Vector3 _position = new Vector3(0, 0, 128 * 4);
 
     public Matrix WorldViewProj { get; private set; }
 
@@ -50,7 +50,9 @@ public class Camera
 
         Matrix scale = Matrix.CreateScale(Zoom, Zoom, 1f);
 
-        Matrix projection = _oblique * ortho * scale;
+        Matrix translation = Matrix.CreateTranslation(new Vector3(0, 128 * 4, 0));
+
+        Matrix projection = _oblique * translation * ortho * scale;
 
         Matrix worldViewProj;
         Matrix worldView;

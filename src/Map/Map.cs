@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework;
+
 namespace UORenderer;
 
 public struct LandTile
@@ -5,9 +7,14 @@ public struct LandTile
     public ushort ID;
     public sbyte Z;
 
-    /*
+    public Vector4 CornerZ;
+
+    public Vector3 NormalTop;
+    public Vector3 NormalRight;
+    public Vector3 NormalBottom;
+    public Vector3 NormalLeft;
+
     public LandData Data => TileData.LandTable[ID & TileData.MaxLandValue];
-    */
 }
 
 public struct StaticTile
@@ -18,13 +25,14 @@ public struct StaticTile
     public int Z;
     public ushort Hue;
 
-    /*
     public ItemData Data => TileData.ItemTable[ID & TileData.MaxItemValue];
-    */
 }
 
 public class Map
 {
+    public static float TILE_SIZE = 31.11f;
+    public static float TILE_Z_SCALE = 4f;
+
     private struct Sector
     {
         public StaticTile[,][] Statics;
@@ -119,14 +127,33 @@ public class Map
         if (x < 0 || y < 0 || x >= m_SectorWidth || y >= m_SectorHeight || m_Map == null)
             return m_InvalidLandSector;
 
-        ref var Sector = ref m_Sectors[x, y];
+        ref var sector = ref m_Sectors[x, y];
 
-        if (Sector.Land == null)
+        if (sector.Land == null)
         {
-            Sector.Land = ReadLandSector(x, y);
+            sector.Land = ReadLandSector(x, y);
+
+            for (int tx = 0; tx < 8; tx++)
+            {
+                for (int ty = 0; ty < 8; ty++)
+                {
+                    var tileX = x * 8 + tx;
+                    var tileY = y * 8 + ty;
+
+                    ref var tile = ref sector.Land[tx, ty];
+
+                    tile.CornerZ = GetCornerZ(tileX, tileY);
+
+                    tile.NormalTop = ComputeNormal(tileX, tileY);
+                    tile.NormalRight = ComputeNormal(tileX + 1, tileY);
+                    tile.NormalLeft = ComputeNormal(tileX, tileY + 1);
+                    tile.NormalBottom = ComputeNormal(tileX + 1, tileY + 1);
+                }
+            }
+
         }
 
-        return Sector.Land;
+        return sector.Land;
     }
 
     public LandTile GetLandTile(int x, int y)
@@ -134,6 +161,44 @@ public class Map
         LandTile[,] tiles = GetLandSector(x >> 3, y >> 3);
 
         return tiles[(x & 0x7), (y & 0x7)];
+    }
+
+    private bool CanDrawStatic(ushort id)
+    {
+        if (id >= TileData.ItemTable.Length)
+            return false;
+
+        ref ItemData data = ref TileData.ItemTable[id];
+
+        if ((data.Flags & TileFlag.NoDraw) != 0)
+            return false;
+
+        switch (id)
+        {
+            case 0x0001:
+            case 0x21BC:
+            case 0x63D3:
+                return false;
+
+            case 0x9E4C:
+            case 0x9E64:
+            case 0x9E65:
+            case 0x9E7D:
+                return ((data.Flags & TileFlag.Background) == 0 &&
+                        (data.Flags & TileFlag.Surface) == 0 &&
+                        (data.Flags & TileFlag.NoDraw) == 0);
+
+            case 0x2198:
+            case 0x2199:
+            case 0x21A0:
+            case 0x21A1:
+            case 0x21A2:
+            case 0x21A3:
+            case 0x21A4:
+                return false;
+        }
+
+        return true;
     }
 
     private unsafe StaticTile[,][] ReadStaticSector(int x, int y)
@@ -162,6 +227,9 @@ public class Map
             var offsetZ = m_Statics.ReadSByte();
             m_Statics.ReadUInt16();
 
+            if (!CanDrawStatic(id))
+                continue;
+
             ref var tileList = ref tiles[offsetX, offsetY];
             if (tileList == null)
             {
@@ -180,7 +248,84 @@ public class Map
             tile.Z = offsetZ;
         }
 
+        /* Sort all the tile lists by Z */
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                ref var l = ref tiles[i, j];
+                if (l == null)
+                    continue;
+
+                Array.Sort(l, (a, b) =>
+                {
+                    return a.Z.CompareTo(b.Z);
+                });
+            }
+        }
+
         return tiles;
+    }
+
+    private static (Vector2, Vector2)[] _offsets = new[]
+    {
+        (new Vector2(1, 0), new Vector2(0, 1)),
+        (new Vector2(0, 1), new Vector2(-1, 0)),
+        (new Vector2(-1, 0), new Vector2(0, -1)),
+        (new Vector2(0, -1), new Vector2(1, 0))
+    };
+
+    private Vector3 ComputeNormal(int tileX, int tileY)
+    {
+        /* To avoid recursion, this doesn't use the cache and always re-reads
+         * the map file */
+        var t = ReadLandSector(tileX >> 3, tileY >> 3)[(tileX & 0x7), (tileY & 0x7)];
+
+        Vector3 normal = Vector3.Zero;
+
+        for (int i = 0; i < _offsets.Length; i++)
+        {
+            (var tu, var tv) = _offsets[i];
+
+            int ux = (int)(tileX + tu.X);
+            int uy = (int)(tileY + tu.Y);
+
+            int vx = (int)(tileX + tv.X);
+            int vy = (int)(tileY + tv.Y);
+
+
+            var tx = ReadLandSector(ux >> 3, uy >> 3)[(ux & 0x7), (uy & 0x7)];
+            var ty = ReadLandSector(vx >> 3, vy >> 3)[(vx & 0x7), (vy & 0x7)];
+
+            if (tx.ID == 0 || ty.ID == 0)
+                continue;
+
+            Vector3 u = new Vector3(tu.X * TILE_SIZE, tu.Y * TILE_SIZE, tx.Z - t.Z);
+            Vector3 v = new Vector3(tv.X * TILE_SIZE, tv.Y * TILE_SIZE, ty.Z - t.Z);
+
+            var tmp = Vector3.Cross(u, v);
+            normal = Vector3.Add(normal, tmp);
+        }
+
+        return Vector3.Normalize(normal);
+    }
+
+    private Vector4 GetCornerZ(int x, int y)
+    {
+        /* To avoid recursion, this doesn't use the cache and always re-reads
+         * the map file */
+
+        var top = ReadLandSector(x >> 3, y >> 3)[(x & 0x7), (y & 0x7)];
+        var right = ReadLandSector((x + 1) >> 3, y >> 3)[((x + 1) & 0x7), (y & 0x7)];
+        var left = ReadLandSector(x >> 3, (y + 1) >> 3)[(x & 0x7), ((y + 1) & 0x7)];
+        var bottom = ReadLandSector((x + 1) >> 3, (y + 1) >> 3)[((x + 1) & 0x7), ((y + 1) & 0x7)];
+
+        return new Vector4(
+            top.Z * TILE_Z_SCALE,
+            right.Z * TILE_Z_SCALE,
+            left.Z * TILE_Z_SCALE,
+            bottom.Z * TILE_Z_SCALE
+        );
     }
 
     private unsafe LandTile[,] ReadLandSector(int x, int y)

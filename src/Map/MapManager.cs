@@ -8,9 +8,9 @@ public class MapManager
 {
     private readonly GraphicsDevice _gfxDevice;
 
+    private readonly MapEffect _mapEffect;
     private readonly MapRenderer _mapRenderer;
 
-    private readonly ShadowRenderer _shadowRenderer;
     private readonly RenderTarget2D _shadowTarget;
 
     private readonly PostProcessRenderer _postProcessRenderer;
@@ -31,7 +31,6 @@ public class MapManager
     {
         public Texture2D Texture;
         public Rectangle Bounds;
-        public bool AsLand;
     }
 
     private StaticTexture[] _staticTextures;
@@ -42,9 +41,15 @@ public class MapManager
     private Camera _lightSourceCamera = new Camera();
 
     private LightingState _lightingState = new LightingState();
-    private DepthStencilState _depthStencilState = new DepthStencilState();
+    private DepthStencilState _depthStencilState = new DepthStencilState()
+    {
+        DepthBufferEnable = true,
+        DepthBufferWriteEnable = true,
+        DepthBufferFunction = CompareFunction.Less,
+        StencilEnable = false
+    };
 
-    private float TILE_SIZE = 22f;
+    private float TILE_SIZE = 31.11f;
     private float TILE_Z_SCALE = 4f;
 
     private void DarkenTexture(ushort[] pixels)
@@ -72,7 +77,10 @@ public class MapManager
         TextureFormat.DetectFormat(gd);
         TextureAtlasManager.Initialize(gd);
 
-        _mapRenderer = new MapRenderer(gd, null);
+        _mapEffect = new MapEffect(gd);
+        _mapEffect.CurrentTechnique = _mapEffect.Techniques["Terrain"];
+
+        _mapRenderer = new MapRenderer(gd);
 
         _shadowTarget = new RenderTarget2D(
                                 gd,
@@ -81,15 +89,14 @@ public class MapManager
                                 false,
                                 SurfaceFormat.Single,
                                 DepthFormat.Depth24);
-        _shadowRenderer = new ShadowRenderer(gd, _shadowTarget);
 
         _postProcessRenderer = new PostProcessRenderer(gd);
 
         _map = new Map(0, 10752, 6144);
 
-        var focus = _map.GetLandTile(909, 1557);
+        var focus = _map.GetLandTile(1631, 1499);
 
-        _camera.LookAt = new Vector3(909 * TILE_SIZE, 1557 * TILE_SIZE, focus.Z * TILE_Z_SCALE);
+        _camera.LookAt = new Vector3(1631 * TILE_SIZE, 1499 * TILE_SIZE, focus.Z * TILE_Z_SCALE);
         _camera.ScreenSize.X = 0;
         _camera.ScreenSize.Y = 0;
         _camera.ScreenSize.Width = gd.PresentationParameters.BackBufferWidth;
@@ -111,11 +118,8 @@ public class MapManager
             1f - _lightingState.LightDiffuseColor.Z
         );
 
-        /* THIS ALL HAS TO BE DONE TOTALLY DIFFERENTLY. LAND TILES AND STATICS ARE IN THE SAME MUL FILE,
-         * BUT ON OUTLANDS THEY'RE IN DIFFERENT FILES. */
-
-        using var texFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("texmaps.mul"));
-        using var artFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("art.mul"));
+        using var texFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("texmaps.uoo"));
+        using var artFile = new ArtFile(UORenderer.CurrentProject.GetFullPath("landtiles.uoo"));
 
         _landTextures = new LandTexture[artFile.Max];
 
@@ -155,7 +159,7 @@ public class MapManager
         }
 
         /* Lazy load the statics */
-        _staticArt = new ArtFile(UORenderer.CurrentProject.GetFullPath("art.mul"));
+        _staticArt = new ArtFile(UORenderer.CurrentProject.GetFullPath("art.uoo"));
         _staticTextures = new StaticTexture[_staticArt.Max];
 
     }
@@ -348,7 +352,7 @@ public class MapManager
         int screenHeight = _camera.ScreenSize.Height;
 
         /* Calculate the size of the drawing diamond in pixels */
-        float screenDiamondDiagonal = (screenWidth + screenHeight) / zoom;
+        float screenDiamondDiagonal = (screenWidth + screenHeight) / zoom / 2f;
 
         Vector3 center = _camera.LookAt;
 
@@ -409,17 +413,98 @@ public class MapManager
         );
     }
 
+    private bool IsRock(ushort id)
+    {
+        switch (id)
+        {
+            case 4945:
+            case 4948:
+            case 4950:
+            case 4953:
+            case 4955:
+            case 4958:
+            case 4959:
+            case 4960:
+            case 4962:
+                return true;
+
+            default:
+                return id >= 6001 && id <= 6012;
+        }
+    }
+
+    private bool IsTree(ushort id)
+    {
+        switch (id)
+        {
+            case 3274:
+            case 3275:
+            case 3276:
+            case 3277:
+            case 3280:
+            case 3283:
+            case 3286:
+            case 3288:
+            case 3290:
+            case 3293:
+            case 3296:
+            case 3299:
+            case 3302:
+            case 3394:
+            case 3395:
+            case 3417:
+            case 3440:
+            case 3461:
+            case 3476:
+            case 3480:
+            case 3484:
+            case 3488:
+            case 3492:
+            case 3496:
+            case 3230:
+            case 3240:
+            case 3242:
+            case 3243:
+            case 3273:
+            case 3320:
+            case 3323:
+            case 3326:
+            case 3329:
+            case 4792:
+            case 4793:
+            case 4794:
+            case 4795:
+            case 12596:
+            case 12593:
+            case 3221:
+            case 3222:
+            case 12602:
+            case 12599:
+            case 3238:
+            case 3225:
+            case 3229:
+            case 12881:
+            case 3228:
+            case 3227:
+            case 39290:
+            case 39280:
+            case 39219:
+            case 39215:
+            case 39223:
+            case 39288:
+            case 39217:
+            case 39225:
+            case 39284:
+            case 46822:
+            case 14492:
+                return true;
+        }
+
+        return false;
+    }
+
     private void DrawShadowMap(int minTileX, int minTileY, int maxTileX, int maxTileY)
     {
-        var depthStatics = new DepthStencilState()
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = true,
-            DepthBufferFunction = CompareFunction.Less
-        };
-
-        _shadowRenderer.Begin(_lightSourceCamera, RasterizerState.CullNone, SamplerState.PointClamp, depthStatics, BlendState.AlphaBlend);
-
         for (int y = maxTileY; y >= minTileY; y--)
         {
             for (int x = maxTileX; x >= minTileX; x--)
@@ -430,98 +515,91 @@ public class MapManager
                 {
                     ref var s = ref statics[i];
 
-                    ref var staticTex = ref _staticTextures[s.ID];
+                    ref var data = ref TileData.ItemTable[s.ID];
 
-                    if (staticTex.Texture == null)
-                    {
-                        var sprite = _staticArt.GetSprite(s.ID);
+                    if (!IsRock(s.ID) && !IsTree(s.ID) && !data.Flags.HasFlag(TileFlag.Foliage))
+                        continue;
 
-                        if (sprite.Pixels == null)
-                        {
-                            continue;
-                        }
-
-                        if (sprite.Width == 44 && sprite.Height == 44)
-                        {
-                            staticTex.Texture = TextureAtlasManager.AddLandTile(sprite.Pixels, sprite.Width, sprite.Height, out staticTex.Bounds);
-                            staticTex.AsLand = true;
-                        }
-                        else
-                        {
-                            staticTex.Texture = TextureAtlasManager.AddArt(sprite.Pixels, sprite.Width, sprite.Height, out staticTex.Bounds);
-                        }
-                    }
-
-                    if (staticTex.AsLand)
-                    {
-                        _shadowRenderer.DrawTile(
-                            new Vector2(x * TILE_SIZE, y * TILE_SIZE),
-                            new Vector4(s.Z * TILE_Z_SCALE),
-                            staticTex.Texture,
-                            staticTex.Bounds,
-                            true
-                        );
-                    }
-                    else
-                    {
-                        _shadowRenderer.DrawBillboard(
-                            new Vector3(x * TILE_SIZE, y * TILE_SIZE, s.Z * TILE_Z_SCALE),
-                            staticTex.Texture,
-                            staticTex.Bounds
-                        );
-                    }
+                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.001f);
                 }
             }
         }
 
-        for (int y = maxTileY; y >= minTileY; y--)
+        DrawLand(minTileX, minTileY, maxTileX, maxTileY);
+    }
+
+    private bool CanDrawStatic(ushort id)
+    {
+        if (id >= TileData.ItemTable.Length)
+            return false;
+
+        ref ItemData data = ref TileData.ItemTable[id];
+
+        if ((data.Flags & TileFlag.NoDraw) != 0)
+            return false;
+
+        switch (id)
         {
-            for (int x = maxTileX; x >= minTileX; x--)
-            {
-                var tile = _map.GetLandTile(x, y);
+            case 0x0001:
+            case 0x21BC:
+            case 0x63D3:
+                return false;
 
-                ref var tileTex = ref _landTextures[tile.ID];
+            case 0x9E4C:
+            case 0x9E64:
+            case 0x9E65:
+            case 0x9E7D:
+                return ((data.Flags & TileFlag.Background) == 0 &&
+                        (data.Flags & TileFlag.Surface) == 0 &&
+                        (data.Flags & TileFlag.NoDraw) == 0);
 
-                if (tileTex.Texture == null)
-                    continue;
-
-                ref var data = ref TileData.LandTable[tile.ID];
-
-                Vector4 zCorners;
-                if ((data.Flags & TileFlag.Wet) != 0)
-                {
-                    /* Water tiles are always flat */
-                    zCorners = new Vector4(tile.Z * TILE_Z_SCALE);
-                }
-                else
-                {
-                    zCorners = GetCornerZ(x, y);
-                }
-
-                _shadowRenderer.DrawTile(
-                    new Vector2(x * TILE_SIZE, y * TILE_SIZE),
-                    zCorners,
-                    tileTex.Texture,
-                    tileTex.Bounds,
-                    tileTex.Rotate
-                );
-            }
+            case 0x2198:
+            case 0x2199:
+            case 0x21A0:
+            case 0x21A1:
+            case 0x21A2:
+            case 0x21A3:
+            case 0x21A4:
+                return false;
         }
 
-        _shadowRenderer.End();
+        return true;
+    }
+
+    private void DrawStatic(ref StaticTile s, int x, int y, float depthOffset)
+    {
+        if (!CanDrawStatic(s.ID))
+            return;
+
+        ref var data = ref TileData.ItemTable[s.ID];
+
+        ref var staticTex = ref _staticTextures[s.ID];
+
+        if (staticTex.Texture == null)
+        {
+            var sprite = _staticArt.GetSprite(s.ID);
+
+            if (sprite.Pixels == null)
+            {
+                return;
+            }
+
+            staticTex.Texture = TextureAtlasManager.AddArt(sprite.Pixels, sprite.Width, sprite.Height, out staticTex.Bounds);
+        }
+
+        bool cylindrical = data.Flags.HasFlag(TileFlag.Foliage) || IsRock(s.ID) || IsTree(s.ID);
+
+        _mapRenderer.DrawBillboard(
+            new Vector3(x * TILE_SIZE, y * TILE_SIZE, s.Z * TILE_Z_SCALE),
+            depthOffset,
+            staticTex.Texture,
+            staticTex.Bounds,
+            cylindrical
+        );
     }
 
     public void DrawStatics(int minTileX, int minTileY, int maxTileX, int maxTileY)
     {
-        var depthStatics = new DepthStencilState()
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = true,
-            DepthBufferFunction = CompareFunction.Less
-        };
-
-        _mapRenderer.Begin(_camera, RasterizerState.CullNone, SamplerState.PointClamp, _lightingState, depthStatics, BlendState.AlphaBlend, _shadowTarget, _lightSourceCamera);
-
         for (int y = maxTileY; y >= minTileY; y--)
         {
             for (int x = maxTileX; x >= minTileX; x--)
@@ -532,67 +610,14 @@ public class MapManager
                 {
                     ref var s = ref statics[i];
 
-                    ref var staticTex = ref _staticTextures[s.ID];
-
-                    if (staticTex.Texture == null)
-                    {
-                        var sprite = _staticArt.GetSprite(s.ID);
-
-                        if (sprite.Pixels == null)
-                        {
-                            continue;
-                        }
-
-                        if (sprite.Width == 44 && sprite.Height == 44)
-                        {
-                            // This should really check the surface flags too I think.
-                            staticTex.Texture = TextureAtlasManager.AddLandTile(sprite.Pixels, sprite.Width, sprite.Height, out staticTex.Bounds);
-                            staticTex.AsLand = true;
-                        }
-                        else
-                        {
-                            staticTex.Texture = TextureAtlasManager.AddArt(sprite.Pixels, sprite.Width, sprite.Height, out staticTex.Bounds);
-                        }
-                    }
-
-                    if (staticTex.AsLand)
-                    {
-                        _mapRenderer.DrawTile(
-                            new Vector2(x * TILE_SIZE, y * TILE_SIZE),
-                            new Vector4(s.Z * TILE_Z_SCALE),
-                            Vector3.UnitZ,
-                            Vector3.UnitZ,
-                            Vector3.UnitZ,
-                            Vector3.UnitZ,
-                            staticTex.Texture,
-                            staticTex.Bounds,
-                            true
-                        );
-                    }
-                    else
-                    {
-                        _mapRenderer.DrawBillboard(
-                            new Vector3(x * TILE_SIZE, y * TILE_SIZE, s.Z * TILE_Z_SCALE),
-                            Vector3.UnitZ,
-                            staticTex.Texture,
-                            staticTex.Bounds
-                        );
-                    }
+                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.001f);
                 }
             }
         }
-        _mapRenderer.End();
-
     }
 
     private void DrawLand(int minTileX, int minTileY, int maxTileX, int maxTileY)
     {
-        _depthStencilState.DepthBufferEnable = true;
-        _depthStencilState.DepthBufferWriteEnable = false;
-        _depthStencilState.DepthBufferFunction = CompareFunction.Less;
-
-        _mapRenderer.Begin(_camera, RasterizerState.CullNone, SamplerState.PointClamp, _lightingState, _depthStencilState, BlendState.AlphaBlend, _shadowTarget, _lightSourceCamera);
-
         for (int y = maxTileY; y >= minTileY; y--)
         {
             for (int x = maxTileX; x >= minTileX; x--)
@@ -625,11 +650,11 @@ public class MapManager
                 {
                     _mapRenderer.DrawTile(
                         new Vector2(x * TILE_SIZE, y * TILE_SIZE),
-                        GetCornerZ(x, y),
-                        ComputeNormal(x, y),
-                        ComputeNormal(x + 1, y),
-                        ComputeNormal(x, y + 1),
-                        ComputeNormal(x + 1, y + 1),
+                        tile.CornerZ,
+                        tile.NormalTop,
+                        tile.NormalRight,
+                        tile.NormalLeft,
+                        tile.NormalBottom,
                         tileTex.Texture,
                         tileTex.Bounds,
                         tileTex.Rotate
@@ -639,9 +664,6 @@ public class MapManager
 
             }
         }
-
-        _mapRenderer.End();
-
     }
 
     public void Draw()
@@ -651,10 +673,31 @@ public class MapManager
 
         CalculateViewRange(out var minTileX, out var minTileY, out var maxTileX, out var maxTileY);
 
+        _mapEffect.WorldViewProj = _lightSourceCamera.WorldViewProj;
+        _mapEffect.LightSource.Enabled = false;
+        _mapEffect.CurrentTechnique = _mapEffect.Techniques["ShadowMap"];
+
+        _mapRenderer.Begin(_shadowTarget, _mapEffect, _lightSourceCamera, RasterizerState.CullNone, SamplerState.PointClamp, _depthStencilState, BlendState.AlphaBlend, null);
         DrawShadowMap(minTileX, minTileY, maxTileX, maxTileY);
+        _mapRenderer.End();
 
+        _mapEffect.WorldViewProj = _camera.WorldViewProj;
+        _mapEffect.LightWorldViewProj = _lightSourceCamera.WorldViewProj;
+        _mapEffect.AmbientLightColor = _lightingState.AmbientLightColor;
+        _mapEffect.LightSource.Direction = _lightingState.LightDirection;
+        _mapEffect.LightSource.DiffuseColor = _lightingState.LightDiffuseColor;
+        _mapEffect.LightSource.SpecularColor = _lightingState.LightSpecularColor;
+        _mapEffect.LightSource.Enabled = true;
+        _mapEffect.CurrentTechnique = _mapEffect.Techniques["Statics"];
+
+        _mapRenderer.Begin(null, _mapEffect, _camera, RasterizerState.CullNone, SamplerState.PointClamp, _depthStencilState, BlendState.AlphaBlend, _shadowTarget);
         DrawStatics(minTileX, minTileY, maxTileX, maxTileY);
+        _mapRenderer.End();
 
+        _mapEffect.CurrentTechnique = _mapEffect.Techniques["Terrain"];
+
+        _mapRenderer.Begin(null, _mapEffect, _camera, RasterizerState.CullNone, SamplerState.PointClamp, _depthStencilState, BlendState.AlphaBlend, _shadowTarget);
         DrawLand(minTileX, minTileY, maxTileX, maxTileY);
+        _mapRenderer.End();
     }
 }

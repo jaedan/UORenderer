@@ -133,72 +133,266 @@ public struct ItemData
 [Flags]
 public enum TileFlag : ulong
 {
-    None = 0x00000000,
-    Background = 0x00000001,
-    Weapon = 0x00000002,
-    Transparent = 0x00000004,
-    Translucent = 0x00000008,
-    Wall = 0x00000010,
-    Damaging = 0x00000020,
-    Impassable = 0x00000040,
-    Wet = 0x00000080,
-    Unknown1 = 0x00000100,
-    Surface = 0x00000200,
-    Bridge = 0x00000400,
-    Generic = 0x00000800,
-    Window = 0x00001000,
-    NoShoot = 0x00002000,
-    ArticleA = 0x00004000,
-    ArticleAn = 0x00008000,
-    Internal = 0x00010000,
-    Foliage = 0x00020000,
-    PartialHue = 0x00040000,
-    Unknown2 = 0x00080000,
-    Map = 0x00100000,
-    Container = 0x00200000,
-    Wearable = 0x00400000,
-    LightSource = 0x00800000,
-    Animation = 0x01000000,
-    NoDiagonal = 0x02000000,
-    Unknown3 = 0x04000000,
-    Armor = 0x08000000,
-    Roof = 0x10000000,
-    Door = 0x20000000,
-    StairBack = 0x40000000,
-    StairRight = 0x80000000,
-
-    HS33 = 0x0000000100000000,
-    HS34 = 0x0000000200000000,
-    HS35 = 0x0000000400000000,
-    HS36 = 0x0000000800000000,
-    HS37 = 0x0000001000000000,
-    HS38 = 0x0000002000000000,
-    HS39 = 0x0000004000000000,
-    HS40 = 0x0000008000000000,
-    HS41 = 0x0000010000000000,
-    HS42 = 0x0000020000000000,
-    HS43 = 0x0000040000000000,
-    HS44 = 0x0000080000000000,
-    HS45 = 0x0000100000000000,
-    HS46 = 0x0000200000000000,
-    HS47 = 0x0000400000000000,
-    HS48 = 0x0000800000000000,
-    HS49 = 0x0001000000000000,
-    HS50 = 0x0002000000000000,
-    HS51 = 0x0004000000000000,
-    HS52 = 0x0008000000000000,
-    HS53 = 0x0010000000000000,
-    HS54 = 0x0020000000000000,
-    HS55 = 0x0040000000000000,
-    HS56 = 0x0080000000000000,
-    HS57 = 0x0100000000000000,
-    HS58 = 0x0200000000000000,
-    HS59 = 0x0400000000000000,
-    HS60 = 0x0800000000000000,
-    HS61 = 0x1000000000000000,
-    HS62 = 0x2000000000000000,
-    HS63 = 0x4000000000000000,
-    HS64 = 0x8000000000000000
+    /// <summary>
+    ///     Nothing is flagged.
+    /// </summary>
+    None = 0,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Background = 1ul << 0,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Weapon = 1ul << 1,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Transparent = 1ul << 2,
+    /// <summary>
+    ///     The tile is rendered with partial alpha-transparency.
+    /// </summary>
+    Translucent = 1ul << 3,
+    /// <summary>
+    ///     The tile is a wall.
+    /// </summary>
+    Wall = 1ul << 4,
+    /// <summary>
+    ///     The tile can cause damage when moved over.
+    /// </summary>
+    Damaging = 1ul << 5,
+    /// <summary>
+    ///     The tile may not be moved over or through.
+    /// </summary>
+    Impassable = 1ul << 6,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Wet = 1ul << 7,
+    /// <summary>
+    ///     Unknown.
+    /// </summary>
+    Unknown1 = 1ul << 8,
+    /// <summary>
+    ///     The tile is a surface. It may be moved over, but not through.
+    /// </summary>
+    Surface = 1ul << 9,
+    /// <summary>
+    ///     The tile is a stair, ramp, or ladder.
+    /// </summary>
+    Bridge = 1ul << 10,
+    /// <summary>
+    ///     The tile is stackable
+    /// </summary>
+    Generic = 1ul << 11,
+    /// <summary>
+    ///     The tile is a window. Like <see cref="TileFlag.NoShoot" />, tiles with this flag block line of sight.
+    /// </summary>
+    Window = 1ul << 12,
+    /// <summary>
+    ///     The tile blocks line of sight.
+    /// </summary>
+    NoShoot = 1ul << 13,
+    /// <summary>
+    ///     For single-amount tiles, the string "a " should be prepended to the tile name.
+    /// </summary>
+    ArticleA = 1ul << 14,
+    /// <summary>
+    ///     For single-amount tiles, the string "an " should be prepended to the tile name.
+    /// </summary>
+    ArticleAn = 1ul << 15,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Internal = 1ul << 16,
+    /// <summary>
+    ///     The tile becomes translucent when walked behind. Boat masts also have this flag.
+    /// </summary>
+    Foliage = 1ul << 17,
+    /// <summary>
+    ///     Only gray pixels will be hued
+    /// </summary>
+    PartialHue = 1ul << 18,
+    /// <summary>
+    ///     Unknown.
+    /// </summary>
+    NoHouse = 1ul << 19,
+    /// <summary>
+    ///     The tile is a map--in the cartography sense. Unknown usage.
+    /// </summary>
+    Map = 1ul << 20,
+    /// <summary>
+    ///     The tile is a container.
+    /// </summary>
+    Container = 1ul << 21,
+    /// <summary>
+    ///     The tile may be equiped.
+    /// </summary>
+    Wearable = 1ul << 22,
+    /// <summary>
+    ///     The tile gives off light.
+    /// </summary>
+    LightSource = 1ul << 23,
+    /// <summary>
+    ///     The tile is animated.
+    /// </summary>
+    Animation = 1ul << 24,
+    /// <summary>
+    ///     Gargoyles can fly over
+    /// </summary>
+    NoDiagonal = 1ul << 25,
+    /// <summary>
+    ///     Unknown.
+    /// </summary>
+    Unknown2 = 1ul << 26,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    Armor = 1ul << 27,
+    /// <summary>
+    ///     The tile is a slanted roof.
+    /// </summary>
+    Roof = 1ul << 28,
+    /// <summary>
+    ///     The tile is a door. Tiles with this flag can be moved through by ghosts and GMs.
+    /// </summary>
+    Door = 1ul << 29,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    StairBack = 1ul << 30,
+    /// <summary>
+    ///     Not yet documented.
+    /// </summary>
+    StairRight = 1ul << 31,
+    /// <summary>
+    ///     Blend Alphas, tile blending.
+    /// </summary>
+    AlphaBlend = 1ul << 32,
+    /// <summary>
+    ///     Uses new art style?
+    /// </summary>
+    UseNewArt = 1ul << 33,
+    /// <summary>
+    ///     Has art being used?
+    /// </summary>
+    ArtUsed = 1ul << 34,
+    /// <summary>
+    ///     Prevents clipping under tiles at the same z
+    /// </summary>
+    NoClip = 1ul << 35,
+    /// <summary>
+    ///     Disallow shadow on this tile, lightsource? lava?
+    /// </summary>
+    NoShadow = 1ul << 36,
+    /// <summary>
+    ///     Let pixels bleed in to other tiles? Is this Disabling Texture Clamp?
+    /// </summary>
+    PixelBleed = 1ul << 37,
+    /// <summary>
+    ///     Play tile animation once.
+    /// </summary>
+    PlayAnimOnce = 1ul << 38,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _40 = 1ul << 39,
+    /// <summary>
+    ///     Movable multi? Cool ships and vehicles etc?
+    /// </summary>
+    MultiMovable = 1ul << 40,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _42 = 1ul << 41,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _43 = 1ul << 42,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _44 = 1ul << 43,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _45 = 1ul << 44,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _46 = 1ul << 45,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _47 = 1ul << 46,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _48 = 1ul << 47,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _49 = 1ul << 48,
+    /// <summary>
+    ///     Prevents art rendering
+    /// </summary>
+    NoDraw = 1ul << 49,
+    /// <summary>
+    ///     The hue of this object will be used to color its light effect
+    /// </summary>
+    HuedLight = 1ul << 50,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _52 = 1ul << 51,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _53 = 1ul << 52,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _54 = 1ul << 53,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _55 = 1ul << 54,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _56 = 1ul << 55,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _57 = 1ul << 56,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _58 = 1ul << 57,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _59 = 1ul << 58,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _60 = 1ul << 59,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _61 = 1ul << 60,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _62 = 1ul << 61,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _63 = 1ul << 62,
+    /// <summary>
+    ///     Unused
+    /// </summary>
+    _64 = 1ul << 63
 }
 
 public static class TileData
