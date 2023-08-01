@@ -249,6 +249,11 @@ public class Map
             tile.Z = offsetZ;
         }
 
+        if (x == 180 && y == 211)
+        {
+            int q = 5;
+        }
+
         /* Sort all the tile lists by Z */
         for (int i = 0; i < 8; i++)
         {
@@ -260,7 +265,43 @@ public class Map
 
                 Array.Sort(l, (a, b) =>
                 {
-                    return a.Z.CompareTo(b.Z);
+                    int zdiff = a.Z.CompareTo(b.Z);
+                    if (zdiff != 0)
+                    {
+                        return zdiff;
+                    }
+
+                    // Tie breaks for tiles at the same Z, so it remains
+                    // deterministic
+
+                    if (a.Data.Flags.HasFlag(TileFlag.Foliage) && !b.Data.Flags.HasFlag(TileFlag.Foliage))
+                    {
+                        return 1;
+                    }
+                    else if (b.Data.Flags.HasFlag(TileFlag.Foliage))
+                    {
+                        return -1;
+                    }
+
+                    if (a.Data.Flags.HasFlag(TileFlag.Background) && !b.Data.Flags.HasFlag(TileFlag.Background))
+                    {
+                        return -1;
+                    }
+                    else if (b.Data.Flags.HasFlag(TileFlag.Background))
+                    {
+                        return 1;
+                    }
+
+                    if (a.Data.Flags.HasFlag(TileFlag.Roof) && !b.Data.Flags.HasFlag(TileFlag.Roof))
+                    {
+                        return 1;
+                    }
+                    else if (b.Data.Flags.HasFlag(TileFlag.Roof))
+                    {
+                        return -1;
+                    }
+
+                    return 0;
                 });
             }
         }

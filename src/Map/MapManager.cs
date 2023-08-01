@@ -95,9 +95,9 @@ public class MapManager
 
         _map = new Map(0, 7168, 4096);
 
-        var focus = _map.GetLandTile(1631, 1499);
+        var focus = _map.GetLandTile(1440, 1688);
 
-        _camera.LookAt = new Vector3(1631 * TILE_SIZE, 1499 * TILE_SIZE, focus.Z * TILE_Z_SCALE);
+        _camera.LookAt = new Vector3(1440 * TILE_SIZE, 1688 * TILE_SIZE, focus.Z * TILE_Z_SCALE);
         _camera.ScreenSize.X = 0;
         _camera.ScreenSize.Y = 0;
         _camera.ScreenSize.Width = gd.PresentationParameters.BackBufferWidth;
