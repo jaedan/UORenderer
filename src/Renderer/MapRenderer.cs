@@ -26,6 +26,7 @@ public struct MapVertex : IVertexType
     public Vector3 Position;
     public Vector3 Normal;
     public Vector3 TextureCoordinate;
+    public Vector3 HueCoordinate;
 
     public static readonly VertexDeclaration VertexDeclaration;
 
@@ -51,6 +52,12 @@ public struct MapVertex : IVertexType
                     VertexElementFormat.Vector3,
                     VertexElementUsage.TextureCoordinate,
                     0
+                ),
+                new VertexElement(
+                    36,
+                    VertexElementFormat.Vector3,
+                    VertexElementUsage.TextureCoordinate,
+                    0
                 )
             }
         );
@@ -59,12 +66,14 @@ public struct MapVertex : IVertexType
     public MapVertex(
         Vector3 position,
         Vector3 normal,
-        Vector3 textureCoordinate
+        Vector3 textureCoordinate,
+        Vector3 hueCoordinate
     )
     {
         Position = position;
         Normal = normal;
         TextureCoordinate = textureCoordinate;
+        HueCoordinate = hueCoordinate;
     }
 }
 
@@ -258,19 +267,23 @@ public class MapRenderer
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX, posY, cornerZ.X),
                     normal0,
-                    new Vector3(texX + (texWidth / 2f), texY, 0));
+                    new Vector3(texX + (texWidth / 2f), texY, 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX + TILE_SIZE, posY, cornerZ.Y),
                     normal1,
-                    new Vector3(texX + texWidth, texY + (texHeight / 2f), 0));
+                    new Vector3(texX + texWidth, texY + (texHeight / 2f), 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX, posY + TILE_SIZE, cornerZ.Z),
                     normal2,
-                    new Vector3(texX, texY + (texHeight / 2f), 0));
+                    new Vector3(texX, texY + (texHeight / 2f), 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX + TILE_SIZE, posY + TILE_SIZE, cornerZ.W),
                     normal3,
-                    new Vector3(texX + (texWidth / 2f), texY + texHeight, 0));
+                    new Vector3(texX + (texWidth / 2f), texY + texHeight, 0),
+                    Vector3.Zero);
             }
             else
             {
@@ -278,19 +291,23 @@ public class MapRenderer
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX, posY, cornerZ.X),
                     normal0,
-                    new Vector3(texX, texY, 0));
+                    new Vector3(texX, texY, 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX + TILE_SIZE, posY, cornerZ.Y),
                     normal1,
-                    new Vector3(texX + texWidth, texY, 0));
+                    new Vector3(texX + texWidth, texY, 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX, posY + TILE_SIZE, cornerZ.Z),
                     normal2,
-                    new Vector3(texX, texY + texHeight, 0));
+                    new Vector3(texX, texY + texHeight, 0),
+                    Vector3.Zero);
                 _vertexInfo[cur++] = new MapVertex(
                     new Vector3(posX + TILE_SIZE, posY + TILE_SIZE, cornerZ.W),
                     normal3,
-                    new Vector3(texX + texWidth, texY + texHeight, 0));
+                    new Vector3(texX + texWidth, texY + texHeight, 0),
+                    Vector3.Zero);
             }
 
             _numTiles++;
@@ -300,6 +317,7 @@ public class MapRenderer
             Vector3 tilePos,
             float depthOffset,
             Rectangle texCoords,
+            Vector3 hueCoords,
             bool cylindrical)
 
         {
@@ -355,19 +373,23 @@ public class MapRenderer
             _vertexInfo[cur++] = new MapVertex(
                 Vector3.Transform(v1, vtrans),
                 Vector3.UnitZ,
-                Vector3.Transform(t1, ttrans));
+                Vector3.Transform(t1, ttrans),
+                hueCoords);
             _vertexInfo[cur++] = new MapVertex(
                 Vector3.Transform(v2, vtrans),
                 Vector3.UnitZ,
-                Vector3.Transform(t2, ttrans));
+                Vector3.Transform(t2, ttrans),
+                hueCoords);
             _vertexInfo[cur++] = new MapVertex(
                 Vector3.Transform(v3, vtrans),
                 Vector3.UnitZ,
-                Vector3.Transform(t3, ttrans));
+                Vector3.Transform(t3, ttrans),
+                hueCoords);
             _vertexInfo[cur++] = new MapVertex(
                 Vector3.Transform(v4, vtrans),
                 Vector3.UnitZ,
-                Vector3.Transform(t4, ttrans));
+                Vector3.Transform(t4, ttrans),
+                hueCoords);
 
             _numTiles++;
         }
@@ -497,10 +519,11 @@ public class MapRenderer
         float depthOffset,
         Texture2D texture,
         Rectangle texCoords,
+        Vector3 hueCoords,
         bool cylindrical)
     {
         var batcher = GetBatcher(texture);
-        batcher.DrawBillboard(tilePos, depthOffset, texCoords, cylindrical);
+        batcher.DrawBillboard(tilePos, depthOffset, texCoords, hueCoords, cylindrical);
     }
 
 }
