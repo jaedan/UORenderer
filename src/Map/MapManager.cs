@@ -521,7 +521,7 @@ public class MapManager
                     if (!IsRock(s.ID) && !IsTree(s.ID) && !data.Flags.HasFlag(TileFlag.Foliage))
                         continue;
 
-                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.001f);
+                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.0001f);
                 }
             }
         }
@@ -567,6 +567,42 @@ public class MapManager
         return true;
     }
 
+    private enum HueMode
+    {
+        NONE = 0,
+        HUED = 1,
+        PARTIAL = 2
+    }
+    
+    private Vector3 GetHueVector(StaticTile s) {
+        var hue = s.Hue;
+        var partial = TileDataLoader.Instance.StaticData[s.ID].IsPartialHue;
+        HueMode mode;
+        
+        if ((s.Hue & 0x8000) != 0)
+        {
+            partial = true;
+            hue &= 0x7FFF;
+        }
+
+        if (hue == 0)
+        {
+            partial = false;
+        }
+        
+        if (hue != 0) {
+            // hue -= 1; //ClassicUO does this decrement, but I works without it
+
+            mode = partial ? HueMode.PARTIAL : HueMode.HUED;
+        }
+        else
+        {
+            mode = HueMode.NONE;
+        }
+
+        return new Vector3(hue, (int)mode, 0);
+    }
+
     private void DrawStatic(ref StaticTile s, int x, int y, float depthOffset)
     {
         if (!CanDrawStatic(s.ID))
@@ -590,11 +626,14 @@ public class MapManager
 
         bool cylindrical = data.Flags.HasFlag(TileFlag.Foliage) || IsRock(s.ID) || IsTree(s.ID);
 
+        var hueCoords = GetHueVector(s);
+
         _mapRenderer.DrawBillboard(
             new Vector3(x * TILE_SIZE, y * TILE_SIZE, s.Z * TILE_Z_SCALE),
             depthOffset,
             staticTex.Texture,
             staticTex.Bounds,
+            hueCoords,
             cylindrical
         );
     }
@@ -611,7 +650,7 @@ public class MapManager
                 {
                     ref var s = ref statics[i];
 
-                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.001f);
+                    DrawStatic(ref s, x, y, (statics.Length - 1 - i) * 0.0001f);
                 }
             }
         }

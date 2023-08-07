@@ -1,5 +1,12 @@
+#define NONE 0
+#define HUED 1
+#define PARTIAL 2
+
+static const float HuesPerTexture = 3000;
+
 sampler TextureSampler : register(s0);
 sampler ShadowSampler : register(s1);
+sampler HueSampler : register(s2);
 
 cbuffer ProjectionMatrix : register(b0) {
     float4x4 WorldViewProj;
@@ -20,6 +27,7 @@ struct VSInput {
     float4 Position : SV_Position;
     float3 Normal   : NORMAL;
     float3 TexCoord : TEXCOORD0;
+    float3 HueCoord : TEXCOORD1;
 };
 
 /* Terrain/Land */
@@ -98,6 +106,7 @@ struct StaticsVSOutput {
     float4 LightViewPosition    : TEXCOORD2;
     float3 TexCoord             : TEXCOORD3;
     float3 Normal               : TEXCOORD4;
+    float3 HueCoord             : TEXCOORD5;
 };
 
 struct StaticsPSInput {
@@ -106,6 +115,7 @@ struct StaticsPSInput {
     float4 LightViewPosition    : TEXCOORD2;
     float3 TexCoord             : TEXCOORD3;
     float3 Normal               : TEXCOORD4;
+    float3 HueCoord             : TEXCOORD5;
 };
 
 StaticsVSOutput StaticsVSMain(VSInput vin) {
@@ -116,6 +126,7 @@ StaticsVSOutput StaticsVSMain(VSInput vin) {
     vout.LightViewPosition = mul(vin.Position, LightWorldViewProj);
     vout.Normal = vin.Normal;
     vout.TexCoord = vin.TexCoord;
+    vout.HueCoord = vin.HueCoord;
 
     //vout.ScreenPosition.z -= (vin.Position.z / 512.0f) * 0.001f;
     vout.ScreenPosition.z += vin.TexCoord.z;
@@ -131,6 +142,14 @@ float4 StaticsPSMain(StaticsPSInput pin) : SV_Target0
 
     if (color.a == 0)
         discard;
+                 
+    int mode = int(pin.HueCoord.y);
+        
+    if (mode == HUED || (mode == PARTIAL && color.r == color.g && color.r == color.b))
+    {
+        float2 hueCoord = float2(color.r, pin.HueCoord.x / HuesPerTexture);
+        color.rgb = tex2D(HueSampler, hueCoord).rgb;
+    }
 
     float2 LightViewTexCoords;
     LightViewTexCoords.x = (pin.LightViewPosition.x / pin.LightViewPosition.w) / 2.0f + 0.5f;

@@ -102,6 +102,7 @@ namespace ClassicUO.Assets
                 ArtLoader.Instance.Load(),
                 TileDataLoader.Instance.Load(),
                 TexmapsLoader.Instance.Load(),
+                HuesLoader.Instance.Load(),
             };
 
             if (!Task.WhenAll(tasks).Wait(TimeSpan.FromSeconds(10)))

@@ -28,7 +28,7 @@ internal class UOGame : Game
         IsMouseVisible = true;
     }
 
-    protected override void Initialize()
+    protected override unsafe void Initialize()
     {
         Log.Start(LogTypes.All);
 
@@ -40,6 +40,20 @@ internal class UOGame : Game
         }
 
         UOFileManager.Load(clientVersion, UORenderer.CurrentProject.BasePath, false, "ENU");
+        
+        const int TEXTURE_WIDTH = 32;
+        const int TEXTURE_HEIGHT = 3000;
+        
+        var hueSampler = new Texture2D(GraphicsDevice, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        uint[] buffer = System.Buffers.ArrayPool<uint>.Shared.Rent(TEXTURE_WIDTH * TEXTURE_HEIGHT);
+
+        fixed (uint* ptr = buffer) {
+            HuesLoader.Instance.CreateShaderColors(buffer);
+            hueSampler.SetDataPointerEXT(0, null, (IntPtr)ptr, TEXTURE_WIDTH * TEXTURE_HEIGHT * sizeof(uint));
+        }
+        System.Buffers.ArrayPool<uint>.Shared.Return(buffer);
+        GraphicsDevice.Textures[2] = hueSampler;
+        GraphicsDevice.SamplerStates[2] = SamplerState.PointClamp;
 
         if (_gdm.GraphicsDevice.Adapter.IsProfileSupported(GraphicsProfile.HiDef))
         {

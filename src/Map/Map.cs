@@ -226,7 +226,7 @@ public class Map
             var offsetX = m_Statics.ReadByte();
             var offsetY = m_Statics.ReadByte();
             var offsetZ = m_Statics.ReadSByte();
-            m_Statics.ReadUInt16();
+            var hue = m_Statics.ReadUInt16();
 
             if (!CanDrawStatic(id))
                 continue;
@@ -247,6 +247,7 @@ public class Map
             tile.X = (x * 8) + offsetX;
             tile.Y = (y * 8) + offsetY;
             tile.Z = offsetZ;
+            tile.Hue = hue;
         }
 
         if (x == 180 && y == 211)
