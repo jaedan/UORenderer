@@ -140,7 +140,7 @@ internal class UIManager
         return imguikey != ImGuiKey.None;
     }
 
-    private float f = 0.0f; 
+    private float f = 0.0f;
 
     private bool show_test_window = false;
     private bool show_another_window = false;

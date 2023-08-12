@@ -90,16 +90,41 @@ namespace ClassicUO.Utility
                 {
                     byte[] buffer = new byte[fs.Length];
 
-                    fs.Read(buffer, 0, (int) fs.Length);
+                    fs.Read(buffer, 0, (int)fs.Length);
 
                     // VS_VERSION_INFO (unicode)
                     Span<byte> vsVersionInfo = stackalloc byte[]
                     {
-                        0x56, 0x00, 0x53, 0x00, 0x5F, 0x00, 0x56,
-                        0x00, 0x45, 0x00, 0x52, 0x00, 0x53, 0x00,
-                        0x49, 0x00, 0x4F, 0x00, 0x4E, 0x00, 0x5F,
-                        0x00, 0x49, 0x00, 0x4E, 0x00, 0x46, 0x00,
-                        0x4F, 0x00
+                        0x56,
+                        0x00,
+                        0x53,
+                        0x00,
+                        0x5F,
+                        0x00,
+                        0x56,
+                        0x00,
+                        0x45,
+                        0x00,
+                        0x52,
+                        0x00,
+                        0x53,
+                        0x00,
+                        0x49,
+                        0x00,
+                        0x4F,
+                        0x00,
+                        0x4E,
+                        0x00,
+                        0x5F,
+                        0x00,
+                        0x49,
+                        0x00,
+                        0x4E,
+                        0x00,
+                        0x46,
+                        0x00,
+                        0x4F,
+                        0x00
                     };
 
 
@@ -119,7 +144,7 @@ namespace ClassicUO.Utility
                             return true;
                         }
                     }
-                } 
+                }
             }
 
             version = null;
@@ -169,7 +194,7 @@ namespace ClassicUO.Utility
 
                             if (char.IsLetter(c))
                             {
-                                extra = (byte) c;
+                                extra = (byte)c;
 
                                 break;
                             }
@@ -212,7 +237,7 @@ namespace ClassicUO.Utility
                             num_extra = extra;
                         }
 
-                        version = (ClientVersion) (((major & 0xFF) << 24) | ((minor & 0xFF) << 16) | ((build & 0xFF) << 8) | (num_extra & 0xFF));
+                        version = (ClientVersion)(((major & 0xFF) << 24) | ((minor & 0xFF) << 16) | ((build & 0xFF) << 8) | (num_extra & 0xFF));
 
                         return true;
                     }

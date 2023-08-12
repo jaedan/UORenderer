@@ -18,7 +18,7 @@ public abstract class ArtFile : IDisposable
     public abstract Sprite GetSprite(uint id);
 }
 
-public class TexMapsFile: ArtFile
+public class TexMapsFile : ArtFile
 {
     public TexMapsFile(string path)
     {
@@ -44,7 +44,7 @@ public class TexMapsFile: ArtFile
     }
 }
 
-public class StaticsFile: ArtFile
+public class StaticsFile : ArtFile
 {
     public StaticsFile(string path)
     {
@@ -70,7 +70,7 @@ public class StaticsFile: ArtFile
     }
 }
 
-public class LandFile: ArtFile
+public class LandFile : ArtFile
 {
     public LandFile(string path)
     {

@@ -62,7 +62,7 @@ namespace ClassicUO.Assets
                 {
                     var files = Directory.GetFiles(dir);
                     var matches = 0;
-                    
+
                     foreach (var f in files)
                     {
                         if (string.Equals(f, uoFilePath, StringComparison.OrdinalIgnoreCase))
@@ -76,7 +76,7 @@ namespace ClassicUO.Assets
                     {
                         Log.Warn($"Multiple files with ambiguous case found for {file}, using {Path.GetFileName(uoFilePath)}. Check your data directory for duplicate files.");
                     }
-                }             
+                }
             }
 
             return uoFilePath;
@@ -133,16 +133,16 @@ namespace ClassicUO.Assets
                         ref UOFileIndex5D vh = ref Verdata.Patches[i];
                         Log.Info($">>> patching  FileID: {vh.FileID}  -  BlockID: {vh.BlockID}");
 
-                       if (vh.FileID == 4)
+                        if (vh.FileID == 4)
                         {
                             if (vh.BlockID < ArtLoader.Instance.Entries.Length)
                             {
                                 ArtLoader.Instance.Entries[vh.BlockID] = new UOFileIndex
                                 (
                                     verdata.StartAddress,
-                                    (uint) verdata.Length,
+                                    (uint)verdata.Length,
                                     vh.Position,
-                                    (int) vh.Length,
+                                    (int)vh.Length,
                                     0
                                 );
                             }
@@ -150,11 +150,11 @@ namespace ClassicUO.Assets
                         else if (vh.FileID == 30)
                         {
                             verdata.Seek(0);
-                            verdata.Skip((int) vh.Position);
+                            verdata.Skip((int)vh.Position);
 
                             if (vh.Length == 836)
                             {
-                                int offset = (int) (vh.BlockID * 32);
+                                int offset = (int)(vh.BlockID * 32);
 
                                 if (offset + 32 > TileDataLoader.Instance.LandData.Length)
                                 {
@@ -181,7 +181,7 @@ namespace ClassicUO.Assets
                             }
                             else if (vh.Length == 1188)
                             {
-                                int offset = (int) ((vh.BlockID - 0x0200) * 32);
+                                int offset = (int)((vh.BlockID - 0x0200) * 32);
 
                                 if (offset + 32 > TileDataLoader.Instance.StaticData.Length)
                                 {
@@ -239,9 +239,9 @@ namespace ClassicUO.Assets
 
             if (File.Exists(pathdef))
             {
-                TileDataLoader tiledataLoader =  TileDataLoader.Instance;
+                TileDataLoader tiledataLoader = TileDataLoader.Instance;
                 ArtLoader artLoader = ArtLoader.Instance;
-                
+
                 using (DefReader reader = new DefReader(pathdef, 1))
                 {
                     while (reader.Next())
@@ -281,8 +281,8 @@ namespace ClassicUO.Assets
                             }
 
                             if (index < ArtLoader.MAX_LAND_DATA_INDEX_COUNT &&
-                                checkIndex < ArtLoader.MAX_LAND_DATA_INDEX_COUNT && 
-                                checkIndex < tiledataLoader.LandData.Length && 
+                                checkIndex < ArtLoader.MAX_LAND_DATA_INDEX_COUNT &&
+                                checkIndex < tiledataLoader.LandData.Length &&
                                 index < tiledataLoader.LandData.Length &&
                                 !tiledataLoader.LandData[checkIndex].Equals(default) &&
                                 tiledataLoader.LandData[index].Equals(default))

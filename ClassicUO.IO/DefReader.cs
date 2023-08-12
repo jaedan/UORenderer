@@ -276,7 +276,7 @@ namespace ClassicUO.IO
         private int ReadInt(int line, int index)
         {
             string token = TokenAt(line, index);
-           
+
             SanitizeStringNumber(ref token);
 
             if (!string.IsNullOrEmpty(token))

@@ -76,7 +76,7 @@ namespace ClassicUO.Utility.Logging
                 );
 
                 logStream.Write(buffer, 0, message.Length);
-                logStream.WriteByte((byte) '\n');
+                logStream.WriteByte((byte)'\n');
                 logStream.Flush();
             }
             finally
@@ -101,7 +101,7 @@ namespace ClassicUO.Utility.Logging
                 );
 
                 await logStream.WriteAsync(buffer, 0, message.Length);
-                logStream.WriteByte((byte) '\n');
+                logStream.WriteByte((byte)'\n');
                 await logStream.FlushAsync();
             }
             finally

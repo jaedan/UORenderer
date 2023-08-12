@@ -50,9 +50,9 @@ namespace ClassicUO.IO
 
         public long Length { get; private set; }
 
-        public IntPtr StartAddress => (IntPtr) _data;
+        public IntPtr StartAddress => (IntPtr)_data;
 
-        public IntPtr PositionAddress => (IntPtr) (_data + Position);
+        public IntPtr PositionAddress => (IntPtr)(_data + Position);
 
         public bool IsEOF => Position >= Length;
 
@@ -82,7 +82,7 @@ namespace ClassicUO.IO
             //    SetData(d, length);
             ReleaseData();
             _handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            _data = (byte*) _handle.AddrOfPinnedObject();
+            _data = (byte*)_handle.AddrOfPinnedObject();
             Length = length;
             Position = 0;
         }
@@ -90,13 +90,13 @@ namespace ClassicUO.IO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetData(IntPtr data, long length)
         {
-            SetData((byte*) data, length);
+            SetData((byte*)data, length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetData(IntPtr data)
         {
-            SetData((byte*) data, Length);
+            SetData((byte*)data, Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -131,7 +131,7 @@ namespace ClassicUO.IO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public sbyte ReadSByte()
         {
-            return (sbyte) ReadByte();
+            return (sbyte)ReadByte();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -145,7 +145,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(2);
 
-            short v = *(short*) (_data + Position);
+            short v = *(short*)(_data + Position);
             Position += 2;
 
             return v;
@@ -156,7 +156,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(2);
 
-            ushort v = *(ushort*) (_data + Position);
+            ushort v = *(ushort*)(_data + Position);
             Position += 2;
 
             return v;
@@ -167,7 +167,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(4);
 
-            int v = *(int*) (_data + Position);
+            int v = *(int*)(_data + Position);
 
             Position += 4;
 
@@ -179,7 +179,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(4);
 
-            uint v = *(uint*) (_data + Position);
+            uint v = *(uint*)(_data + Position);
             Position += 4;
 
             return v;
@@ -190,7 +190,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(8);
 
-            long v = *(long*) (_data + Position);
+            long v = *(long*)(_data + Position);
             Position += 8;
 
             return v;
@@ -201,7 +201,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(8);
 
-            ulong v = *(ulong*) (_data + Position);
+            ulong v = *(ulong*)(_data + Position);
             Position += 8;
 
             return v;
@@ -268,7 +268,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(2);
 
-            return (ushort) ((ReadByte() << 8) | ReadByte());
+            return (ushort)((ReadByte() << 8) | ReadByte());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -276,7 +276,7 @@ namespace ClassicUO.IO
         {
             EnsureSize(4);
 
-            return (uint) ((ReadByte() << 24) | (ReadByte() << 16) | (ReadByte() << 8) | ReadByte());
+            return (uint)((ReadByte() << 24) | (ReadByte() << 16) | (ReadByte() << 8) | ReadByte());
         }
     }
 }

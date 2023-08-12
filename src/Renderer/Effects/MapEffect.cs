@@ -15,20 +15,24 @@ public class MapEffect : Effect
 
     private Vector3 _ambientLightColor = Vector3.One;
 
-    public Matrix WorldViewProj {
+    public Matrix WorldViewProj
+    {
         get { return _worldViewProj; }
         set { _worldViewProj = value; }
     }
 
-    public Matrix LightWorldViewProj {
+    public Matrix LightWorldViewProj
+    {
         get { return _lightWorldViewProj; }
         set { _lightWorldViewProj = value; }
     }
 
-    public Vector3 AmbientLightColor {
+    public Vector3 AmbientLightColor
+    {
         get { return _ambientLightColor; }
 
-        set {
+        set
+        {
             _ambientLightColor = value;
         }
     }

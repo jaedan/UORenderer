@@ -54,16 +54,16 @@ namespace ClassicUO.IO
 
         public override void FillEntries(ref UOFileIndex[] entries)
         {
-            UOFile file = _idxFile ?? (UOFile) this;
+            UOFile file = _idxFile ?? (UOFile)this;
 
-            int count = (int) file.Length / 12;
+            int count = (int)file.Length / 12;
             entries = new UOFileIndex[count];
 
             for (int i = 0; i < count; i++)
             {
                 ref UOFileIndex e = ref entries[i];
                 e.Address = StartAddress;   // .mul mmf address
-                e.FileSize = (uint) Length; // .mul mmf length
+                e.FileSize = (uint)Length; // .mul mmf length
                 e.Offset = file.ReadUInt(); // .idx offset
                 e.Length = file.ReadInt();  // .idx length
                 e.DecompressedLength = 0;   // UNUSED HERE --> .UOP
@@ -72,8 +72,8 @@ namespace ClassicUO.IO
 
                 if (size > 0)
                 {
-                    e.Width = (short) (size >> 16);
-                    e.Height = (short) (size & 0xFFFF);
+                    e.Width = (short)(size >> 16);
+                    e.Height = (short)(size & 0xFFFF);
                 }
             }
         }

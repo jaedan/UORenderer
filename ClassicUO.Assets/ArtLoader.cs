@@ -52,7 +52,7 @@ namespace ClassicUO.Assets
 
         private ArtLoader(int staticCount, int landCount)
         {
-            _graphicMask = UOFileManager.IsUOPInstallation ? (ushort) 0xFFFF : (ushort) 0x3FFF;
+            _graphicMask = UOFileManager.IsUOPInstallation ? (ushort)0xFFFF : (ushort)0x3FFF;
         }
 
         public static ArtLoader Instance => _instance ?? (_instance = new ArtLoader(MAX_STATIC_DATA_INDEX_COUNT, MAX_LAND_DATA_INDEX_COUNT));
@@ -69,7 +69,7 @@ namespace ClassicUO.Assets
                     if (UOFileManager.IsUOPInstallation && File.Exists(filePath))
                     {
                         _file = new UOFileUop(filePath, "build/artlegacymul/{0:D8}.tga");
-                        Entries = new UOFileIndex[Math.Max(((UOFileUop) _file).TotalEntriesCount, MAX_STATIC_DATA_INDEX_COUNT)];
+                        Entries = new UOFileIndex[Math.Max(((UOFileUop)_file).TotalEntriesCount, MAX_STATIC_DATA_INDEX_COUNT)];
                     }
                     else
                     {

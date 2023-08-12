@@ -92,7 +92,7 @@ namespace ClassicUO.IO
                 try
                 {
                     _accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-                    SetData(ptr, (long) _accessor.SafeMemoryMappedViewHandle.ByteLength);
+                    SetData(ptr, (long)_accessor.SafeMemoryMappedViewHandle.ByteLength);
                 }
                 catch
                 {

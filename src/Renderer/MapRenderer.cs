@@ -17,8 +17,10 @@ public class LightingState
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct MapVertex : IVertexType
 {
-    VertexDeclaration IVertexType.VertexDeclaration {
-        get {
+    VertexDeclaration IVertexType.VertexDeclaration
+    {
+        get
+        {
             return VertexDeclaration;
         }
     }
@@ -372,7 +374,7 @@ public class MapRenderer
             _numTiles++;
         }
     }
-#endregion
+    #endregion
 
     private readonly GraphicsDevice _gfxDevice;
 
@@ -398,7 +400,7 @@ public class MapRenderer
             }
         }
 
-        for (int i = 0; i  < _batchers.Length; i++)
+        for (int i = 0; i < _batchers.Length; i++)
         {
             if (_textures[i] == null)
             {

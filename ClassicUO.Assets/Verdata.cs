@@ -58,7 +58,7 @@ namespace ClassicUO.Assets
 
                     fixed (UOFileIndex5D* ptr = Patches)
                     {
-                        Unsafe.CopyBlockUnaligned((void*)ptr, (void*) File.PositionAddress, (uint) (len * Unsafe.SizeOf<UOFileIndex5D>()));
+                        Unsafe.CopyBlockUnaligned((void*)ptr, (void*)File.PositionAddress, (uint)(len * Unsafe.SizeOf<UOFileIndex5D>()));
                     }
                 }
                 catch
