@@ -31,47 +31,49 @@
 #endregion
 
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using ClassicUO.Utility.Logging;
+using System.Threading.Tasks;
 
-namespace ClassicUO.Utility.Platforms
+namespace UORenderer.IO
 {
-    public static class PlatformHelper
+    public abstract class UOFileLoader : IDisposable
     {
-        public static readonly bool IsMonoRuntime = Type.GetType("Mono.Runtime") != null;
+        public bool IsDisposed { get; private set; }
 
-        public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        public static readonly bool IsOSX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-
-        public static void LaunchBrowser(string url)
+        public virtual void Dispose()
         {
-            try
+            if (IsDisposed)
             {
-                if (IsWindows)
-                {
-                    ProcessStartInfo psi = new ProcessStartInfo
-                    {
-                        FileName = url,
-                        UseShellExecute = true
-                    };
+                return;
+            }
 
-                    Process.Start(psi);
-                }
-                else if (IsOSX)
-                {
-                    Process.Start("open", url);
-                }
-                else
-                {
-                    Process.Start("xdg-open", url);
-                }
-            }
-            catch (Exception ex)
+            IsDisposed = true;
+
+            ClearResources();
+        }
+
+        public UOFileIndex[] Entries;
+
+        public abstract Task Load();
+
+        public virtual void ClearResources()
+        {
+        }
+
+        public ref UOFileIndex GetValidRefEntry(int index)
+        {
+            if (index < 0 || Entries == null || index >= Entries.Length)
             {
-                Log.Error(ex.ToString());
+                return ref UOFileIndex.Invalid;
             }
+
+            ref UOFileIndex entry = ref Entries[index];
+
+            if (entry.Offset < 0 || entry.Length <= 0 || entry.Offset == 0x0000_0000_FFFF_FFFF)
+            {
+                return ref UOFileIndex.Invalid;
+            }
+
+            return ref entry;
         }
     }
 }

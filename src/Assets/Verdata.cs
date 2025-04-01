@@ -30,69 +30,67 @@
 
 #endregion
 
-namespace ClassicUO.IO
+using UORenderer.IO;
+using System.Runtime.CompilerServices;
+
+namespace UORenderer.Assets
 {
-    public class UOFileMul : UOFile
+    public static class Verdata
     {
-        private readonly int _count, _patch;
-        private readonly UOFileIdxMul _idxFile;
-
-        public UOFileMul(string file, string idxfile, int count, int patch = -1) : this(file)
+        unsafe static Verdata()
         {
-            _idxFile = new UOFileIdxMul(idxfile);
-            _count = count;
-            _patch = patch;
-        }
+            string path = UOFileManager.GetUOFilePath("verdata.mul");
 
-        public UOFileMul(string file) : base(file)
-        {
-            Load();
-        }
-
-        public UOFile IdxFile => _idxFile;
-
-
-        public override void FillEntries(ref UOFileIndex[] entries)
-        {
-            UOFile file = _idxFile ?? (UOFile)this;
-
-            int count = (int)file.Length / 12;
-            entries = new UOFileIndex[count];
-
-            for (int i = 0; i < count; i++)
+            if (!System.IO.File.Exists(path))
             {
-                ref UOFileIndex e = ref entries[i];
-                e.Address = StartAddress;   // .mul mmf address
-                e.FileSize = (uint)Length; // .mul mmf length
-                e.Offset = file.ReadUInt(); // .idx offset
-                e.Length = file.ReadInt();  // .idx length
-                e.DecompressedLength = 0;   // UNUSED HERE --> .UOP
+                Patches = new UOFileIndex5D[0];
+                File = null;
+            }
+            else
+            {
+                File = new UOFileMul(path);
 
-                int size = file.ReadInt();
-
-                if (size > 0)
+                // the scope of this try/catch is to avoid unexpected crashes if servers redestribuite wrong verdata
+                try
                 {
-                    e.Width = (short)(size >> 16);
-                    e.Height = (short)(size & 0xFFFF);
+                    int len = File.ReadInt();
+                    Patches = new UOFileIndex5D[len];
+
+                    fixed (UOFileIndex5D* ptr = Patches)
+                    {
+                        Unsafe.CopyBlockUnaligned((void*)ptr, (void*)File.PositionAddress, (uint)(len * Unsafe.SizeOf<UOFileIndex5D>()));
+                    }
+                }
+                catch
+                {
+                    Patches = new UOFileIndex5D[0];
                 }
             }
         }
 
-        public override void Dispose()
-        {
-            _idxFile?.Dispose();
-            base.Dispose();
-        }
+        // FileIDs
+        //0 - map0.mul
+        //1 - staidx0.mul
+        //2 - statics0.mul
+        //3 - artidx.mul
+        //4 - art.mul
+        //5 - anim.idx
+        //6 - anim.mul
+        //7 - soundidx.mul
+        //8 - sound.mul
+        //9 - texidx.mul
+        //10 - texmaps.mul
+        //11 - gumpidx.mul
+        //12 - gumps.mul
+        //13 - multi.idx
+        //14 - multi.mul
+        //15 - skills.idx
+        //16 - skills.mul
+        //30 - tiledata.mul
+        //31 - animdata.mul 
 
-        private class UOFileIdxMul : UOFile
-        {
-            public UOFileIdxMul(string idxpath) : base(idxpath, true)
-            {
-            }
+        public static UOFileIndex5D[] Patches { get; }
 
-            public override void FillEntries(ref UOFileIndex[] entries)
-            {
-            }
-        }
+        public static UOFileMul File { get; }
     }
 }

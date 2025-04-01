@@ -30,8 +30,8 @@
 
 #endregion
 
-using ClassicUO.IO;
-using ClassicUO.Utility;
+using UORenderer.IO;
+using UORenderer.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SDL2;
@@ -39,7 +39,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ClassicUO.Assets
+namespace UORenderer.Assets
 {
     public class ArtLoader : UOFileLoader
     {

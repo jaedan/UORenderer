@@ -34,7 +34,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
-namespace ClassicUO.Utility
+namespace UORenderer.Utility
 {
     public static class MathHelper
     {

@@ -30,67 +30,48 @@
 
 #endregion
 
-using ClassicUO.IO;
-using System.Runtime.CompilerServices;
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using UORenderer.Utility.Logging;
 
-namespace ClassicUO.Assets
+namespace UORenderer.Utility.Platforms
 {
-    public static class Verdata
+    public static class PlatformHelper
     {
-        unsafe static Verdata()
+        public static readonly bool IsMonoRuntime = Type.GetType("Mono.Runtime") != null;
+
+        public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static readonly bool IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        public static readonly bool IsOSX = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
+        public static void LaunchBrowser(string url)
         {
-            string path = UOFileManager.GetUOFilePath("verdata.mul");
-
-            if (!System.IO.File.Exists(path))
+            try
             {
-                Patches = new UOFileIndex5D[0];
-                File = null;
-            }
-            else
-            {
-                File = new UOFileMul(path);
-
-                // the scope of this try/catch is to avoid unexpected crashes if servers redestribuite wrong verdata
-                try
+                if (IsWindows)
                 {
-                    int len = File.ReadInt();
-                    Patches = new UOFileIndex5D[len];
-
-                    fixed (UOFileIndex5D* ptr = Patches)
+                    ProcessStartInfo psi = new ProcessStartInfo
                     {
-                        Unsafe.CopyBlockUnaligned((void*)ptr, (void*)File.PositionAddress, (uint)(len * Unsafe.SizeOf<UOFileIndex5D>()));
-                    }
+                        FileName = url,
+                        UseShellExecute = true
+                    };
+
+                    Process.Start(psi);
                 }
-                catch
+                else if (IsOSX)
                 {
-                    Patches = new UOFileIndex5D[0];
+                    Process.Start("open", url);
                 }
+                else
+                {
+                    Process.Start("xdg-open", url);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
             }
         }
-
-        // FileIDs
-        //0 - map0.mul
-        //1 - staidx0.mul
-        //2 - statics0.mul
-        //3 - artidx.mul
-        //4 - art.mul
-        //5 - anim.idx
-        //6 - anim.mul
-        //7 - soundidx.mul
-        //8 - sound.mul
-        //9 - texidx.mul
-        //10 - texmaps.mul
-        //11 - gumpidx.mul
-        //12 - gumps.mul
-        //13 - multi.idx
-        //14 - multi.mul
-        //15 - skills.idx
-        //16 - skills.mul
-        //30 - tiledata.mul
-        //31 - animdata.mul 
-
-        public static UOFileIndex5D[] Patches { get; }
-
-        public static UOFileMul File { get; }
     }
 }

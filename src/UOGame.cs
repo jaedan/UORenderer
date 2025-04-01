@@ -1,6 +1,6 @@
-using ClassicUO.Assets;
-using ClassicUO.Utility;
-using ClassicUO.Utility.Logging;
+using UORenderer.Assets;
+using UORenderer.Utility;
+using UORenderer.Utility.Logging;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 

@@ -1,15 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UORenderer", "src\UORenderer.csproj", "{812BB87F-5E50-40E3-8EDE-E19417716018}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassicUO.Assets", "ClassicUO.Assets\ClassicUO.Assets.csproj", "{83E7740C-FBBD-4817-B79F-5791992DE051}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassicUO.IO", "ClassicUO.IO\ClassicUO.IO.csproj", "{012B1C17-17EC-4492-863C-C552996FD63A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassicUO.Utility", "ClassicUO.Utility\ClassicUO.Utility.csproj", "{8647E058-3195-47B8-BFB7-56402E5F2FDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FNA.Core", "FNA\FNA.Core.csproj", "{9D8510FC-C2FB-45B9-B006-EC285A554FE7}"
 EndProject
@@ -25,18 +19,6 @@ Global
 		{812BB87F-5E50-40E3-8EDE-E19417716018}.Debug|x64.Build.0 = Debug|x64
 		{812BB87F-5E50-40E3-8EDE-E19417716018}.Release|x64.ActiveCfg = Release|x64
 		{812BB87F-5E50-40E3-8EDE-E19417716018}.Release|x64.Build.0 = Release|x64
-		{83E7740C-FBBD-4817-B79F-5791992DE051}.Debug|x64.ActiveCfg = Debug|x64
-		{83E7740C-FBBD-4817-B79F-5791992DE051}.Debug|x64.Build.0 = Debug|x64
-		{83E7740C-FBBD-4817-B79F-5791992DE051}.Release|x64.ActiveCfg = Release|x64
-		{83E7740C-FBBD-4817-B79F-5791992DE051}.Release|x64.Build.0 = Release|x64
-		{012B1C17-17EC-4492-863C-C552996FD63A}.Debug|x64.ActiveCfg = Debug|x64
-		{012B1C17-17EC-4492-863C-C552996FD63A}.Debug|x64.Build.0 = Debug|x64
-		{012B1C17-17EC-4492-863C-C552996FD63A}.Release|x64.ActiveCfg = Release|x64
-		{012B1C17-17EC-4492-863C-C552996FD63A}.Release|x64.Build.0 = Release|x64
-		{8647E058-3195-47B8-BFB7-56402E5F2FDB}.Debug|x64.ActiveCfg = Debug|x64
-		{8647E058-3195-47B8-BFB7-56402E5F2FDB}.Debug|x64.Build.0 = Debug|x64
-		{8647E058-3195-47B8-BFB7-56402E5F2FDB}.Release|x64.ActiveCfg = Release|x64
-		{8647E058-3195-47B8-BFB7-56402E5F2FDB}.Release|x64.Build.0 = Release|x64
 		{9D8510FC-C2FB-45B9-B006-EC285A554FE7}.Debug|x64.ActiveCfg = Debug|x64
 		{9D8510FC-C2FB-45B9-B006-EC285A554FE7}.Debug|x64.Build.0 = Debug|x64
 		{9D8510FC-C2FB-45B9-B006-EC285A554FE7}.Release|x64.ActiveCfg = Release|x64

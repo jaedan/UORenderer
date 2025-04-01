@@ -30,10 +30,10 @@
 
 #endregion
 
-using ClassicUO.IO;
-using ClassicUO.Utility;
-using ClassicUO.Utility.Logging;
-using ClassicUO.Utility.Platforms;
+using UORenderer.IO;
+using UORenderer.Utility;
+using UORenderer.Utility.Logging;
+using UORenderer.Utility.Platforms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -41,7 +41,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace ClassicUO.Assets
+namespace UORenderer.Assets
 {
     public static class UOFileManager
     {

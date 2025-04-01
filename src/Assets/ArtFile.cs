@@ -1,4 +1,4 @@
-using ClassicUO.Assets;
+using UORenderer.Assets;
 
 namespace UORenderer;
 

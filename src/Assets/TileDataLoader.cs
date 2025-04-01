@@ -30,14 +30,14 @@
 
 #endregion
 
-using ClassicUO.IO;
-using ClassicUO.Utility;
+using UORenderer.IO;
+using UORenderer.Utility;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassicUO.Assets
+namespace UORenderer.Assets
 {
     public class TileDataLoader : UOFileLoader
     {

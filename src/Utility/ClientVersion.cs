@@ -35,7 +35,7 @@ using System.Buffers.Binary;
 using System.Diagnostics;
 using System.IO;
 
-namespace ClassicUO.Utility
+namespace UORenderer.Utility
 {
     public enum ClientVersion
     {

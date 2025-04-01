@@ -30,78 +30,69 @@
 
 #endregion
 
-using System;
-
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
-    public struct UOFileIndex : IEquatable<UOFileIndex>
+    public class UOFileMul : UOFile
     {
-        public UOFileIndex
-        (
-            IntPtr address,
-            uint fileSize,
-            long offset,
-            int length,
-            int decompressed,
-            short width = 0,
-            short height = 0,
-            ushort hue = 0
-        )
-        {
-            Address = address;
-            FileSize = fileSize;
-            Offset = offset;
-            Length = length;
-            DecompressedLength = decompressed;
-            Width = width;
-            Height = height;
-            Hue = hue;
+        private readonly int _count, _patch;
+        private readonly UOFileIdxMul _idxFile;
 
-            AnimOffset = 0;
+        public UOFileMul(string file, string idxfile, int count, int patch = -1) : this(file)
+        {
+            _idxFile = new UOFileIdxMul(idxfile);
+            _count = count;
+            _patch = patch;
         }
 
-        public IntPtr Address;
-        public uint FileSize;
-        public long Offset;
-        public int Length;
-        public int DecompressedLength;
-        public short Width;
-        public short Height;
-        public ushort Hue;
-        public sbyte AnimOffset;
-
-
-
-        public static UOFileIndex Invalid = new UOFileIndex
-        (
-            IntPtr.Zero,
-            0,
-            0,
-            0,
-            0
-        );
-
-        public bool Equals(UOFileIndex other)
+        public UOFileMul(string file) : base(file)
         {
-            return (Address, Offset, Length, DecompressedLength) == (other.Address, other.Offset, other.Length, other.DecompressedLength);
-        }
-    }
-
-    public struct UOFileIndex5D
-    {
-        public UOFileIndex5D(uint file, uint index, uint offset, uint length, uint extra = 0)
-        {
-            FileID = file;
-            BlockID = index;
-            Position = offset;
-            Length = length;
-            GumpData = extra;
+            Load();
         }
 
-        public uint FileID;
-        public uint BlockID;
-        public uint Position;
-        public uint Length;
-        public uint GumpData;
+        public UOFile IdxFile => _idxFile;
+
+
+        public override void FillEntries(ref UOFileIndex[] entries)
+        {
+            UOFile file = _idxFile ?? (UOFile)this;
+
+            int count = (int)file.Length / 12;
+            entries = new UOFileIndex[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                ref UOFileIndex e = ref entries[i];
+                e.Address = StartAddress;   // .mul mmf address
+                e.FileSize = (uint)Length; // .mul mmf length
+                e.Offset = file.ReadUInt(); // .idx offset
+                e.Length = file.ReadInt();  // .idx length
+                e.DecompressedLength = 0;   // UNUSED HERE --> .UOP
+
+                int size = file.ReadInt();
+
+                if (size > 0)
+                {
+                    e.Width = (short)(size >> 16);
+                    e.Height = (short)(size & 0xFFFF);
+                }
+            }
+        }
+
+        public override void Dispose()
+        {
+            _idxFile?.Dispose();
+            base.Dispose();
+        }
+
+        private class UOFileIdxMul : UOFile
+        {
+            public UOFileIdxMul(string idxpath) : base(idxpath, true)
+            {
+            }
+
+            public override void FillEntries(ref UOFileIndex[] entries)
+            {
+            }
+        }
     }
 }

@@ -30,14 +30,14 @@
 
 #endregion
 
-using ClassicUO.Utility.Logging;
+using UORenderer.Utility.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
     public class DefReader : IDisposable
     {

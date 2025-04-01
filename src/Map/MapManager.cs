@@ -1,4 +1,4 @@
-using ClassicUO.Assets;
+using UORenderer.Assets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

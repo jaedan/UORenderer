@@ -35,7 +35,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassicUO.Utility.Logging
+namespace UORenderer.Utility.Logging
 {
     public sealed class LogFile : IDisposable
     {

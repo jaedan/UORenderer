@@ -31,49 +31,77 @@
 #endregion
 
 using System;
-using System.Threading.Tasks;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
-    public abstract class UOFileLoader : IDisposable
+    public struct UOFileIndex : IEquatable<UOFileIndex>
     {
-        public bool IsDisposed { get; private set; }
-
-        public virtual void Dispose()
+        public UOFileIndex
+        (
+            IntPtr address,
+            uint fileSize,
+            long offset,
+            int length,
+            int decompressed,
+            short width = 0,
+            short height = 0,
+            ushort hue = 0
+        )
         {
-            if (IsDisposed)
-            {
-                return;
-            }
+            Address = address;
+            FileSize = fileSize;
+            Offset = offset;
+            Length = length;
+            DecompressedLength = decompressed;
+            Width = width;
+            Height = height;
+            Hue = hue;
 
-            IsDisposed = true;
-
-            ClearResources();
+            AnimOffset = 0;
         }
 
-        public UOFileIndex[] Entries;
+        public IntPtr Address;
+        public uint FileSize;
+        public long Offset;
+        public int Length;
+        public int DecompressedLength;
+        public short Width;
+        public short Height;
+        public ushort Hue;
+        public sbyte AnimOffset;
 
-        public abstract Task Load();
 
-        public virtual void ClearResources()
+
+        public static UOFileIndex Invalid = new UOFileIndex
+        (
+            IntPtr.Zero,
+            0,
+            0,
+            0,
+            0
+        );
+
+        public bool Equals(UOFileIndex other)
         {
+            return (Address, Offset, Length, DecompressedLength) == (other.Address, other.Offset, other.Length, other.DecompressedLength);
+        }
+    }
+
+    public struct UOFileIndex5D
+    {
+        public UOFileIndex5D(uint file, uint index, uint offset, uint length, uint extra = 0)
+        {
+            FileID = file;
+            BlockID = index;
+            Position = offset;
+            Length = length;
+            GumpData = extra;
         }
 
-        public ref UOFileIndex GetValidRefEntry(int index)
-        {
-            if (index < 0 || Entries == null || index >= Entries.Length)
-            {
-                return ref UOFileIndex.Invalid;
-            }
-
-            ref UOFileIndex entry = ref Entries[index];
-
-            if (entry.Offset < 0 || entry.Length <= 0 || entry.Offset == 0x0000_0000_FFFF_FFFF)
-            {
-                return ref UOFileIndex.Invalid;
-            }
-
-            return ref entry;
-        }
+        public uint FileID;
+        public uint BlockID;
+        public uint Position;
+        public uint Length;
+        public uint GumpData;
     }
 }

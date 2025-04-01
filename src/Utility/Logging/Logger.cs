@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ClassicUO.Utility.Logging
+namespace UORenderer.Utility.Logging
 {
     public class Logger
     {

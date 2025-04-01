@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
     public class UOFileUop : UOFile
     {

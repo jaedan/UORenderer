@@ -34,7 +34,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace ClassicUO.Utility
+namespace UORenderer.Utility
 {
     public static class FileSystemHelper
     {

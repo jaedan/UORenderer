@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ClassicUO.Utility
+namespace UORenderer.Utility
 {
     // https://github.com/Thealexbarney/LibHac/blob/master/src/LibHac/FsSystem/ValueStringBuilder.cs
     public ref struct ValueStringBuilder

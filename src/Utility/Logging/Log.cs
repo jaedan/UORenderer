@@ -32,7 +32,7 @@
 
 using System.Diagnostics;
 
-namespace ClassicUO.Utility.Logging
+namespace UORenderer.Utility.Logging
 {
     public class Log
     {

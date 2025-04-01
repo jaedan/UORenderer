@@ -34,7 +34,7 @@ using System;
 using System.Runtime.InteropServices;
 using SDL2;
 
-namespace ClassicUO.Utility.Platforms
+namespace UORenderer.Utility.Platforms
 {
     public static class Native
     {

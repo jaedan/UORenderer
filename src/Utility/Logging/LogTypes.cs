@@ -32,7 +32,7 @@
 
 using System;
 
-namespace ClassicUO.Utility.Logging
+namespace UORenderer.Utility.Logging
 {
     [Flags]
     public enum LogTypes : byte

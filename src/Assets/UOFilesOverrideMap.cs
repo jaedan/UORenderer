@@ -1,9 +1,9 @@
-using ClassicUO.Utility.Logging;
+using UORenderer.Utility.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
     public class UOFilesOverrideMap : Dictionary<string, string>
     {

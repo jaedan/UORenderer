@@ -30,13 +30,13 @@
 
 #endregion
 
-using ClassicUO.Utility;
+using UORenderer.Utility;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
     /// <summary>
     ///     A fast Little Endian data reader.

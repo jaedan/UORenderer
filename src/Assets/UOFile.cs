@@ -32,12 +32,12 @@
 
 #define USE_MMF
 
-using ClassicUO.Utility.Logging;
+using UORenderer.Utility.Logging;
 using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 
-namespace ClassicUO.IO
+namespace UORenderer.IO
 {
     public unsafe class UOFile : DataReader
     {
