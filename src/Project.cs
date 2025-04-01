@@ -8,7 +8,7 @@ public class Project
         // the file has all the info in it.
     }
 
-    public string BasePath = @"C:\Program Files (x86)\Ultima Online";
+    public string BasePath = @"Z:\Ultima Online Stygian Abyss";
 
     public string GetFullPath(string fileName)
     {
