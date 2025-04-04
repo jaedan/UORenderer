@@ -26,6 +26,9 @@ internal class UOGame : Game
         _gdm.PreparingDeviceSettings += (sender, e) => { e.GraphicsDeviceInformation.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents; };
 
         IsMouseVisible = true;
+        
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnWindowResized;
     }
 
     protected override void Initialize()
@@ -80,5 +83,11 @@ internal class UOGame : Game
         _uiManager.Draw();
 
         base.Draw(gameTime);
+    }
+    
+            
+    private void OnWindowResized(object? sender, EventArgs e) {
+        if (sender is GameWindow window) 
+            _mapManager.OnWindowsResized(window);
     }
 }

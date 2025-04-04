@@ -12,7 +12,7 @@ public class MapManager
     private readonly MapEffect _mapEffect;
     private readonly MapRenderer _mapRenderer;
 
-    private readonly RenderTarget2D _shadowTarget;
+    private RenderTarget2D _shadowTarget;
 
     private readonly PostProcessRenderer _postProcessRenderer;
 
@@ -700,5 +700,18 @@ public class MapManager
         _mapRenderer.Begin(null, _mapEffect, _camera, RasterizerState.CullNone, SamplerState.PointClamp, _depthStencilState, BlendState.AlphaBlend, _shadowTarget);
         DrawLand(minTileX, minTileY, maxTileX, maxTileY);
         _mapRenderer.End();
+    }
+    
+    public void OnWindowsResized(GameWindow window) {
+        _camera.ScreenSize = window.ClientBounds;
+        _camera.Update();
+        
+        _shadowTarget = new RenderTarget2D(
+            _gfxDevice,
+            _gfxDevice.PresentationParameters.BackBufferWidth * 2,
+            _gfxDevice.PresentationParameters.BackBufferHeight * 2,
+            false,
+            SurfaceFormat.Single,
+            DepthFormat.Depth24);
     }
 }
